@@ -4,6 +4,7 @@
 demandPredict.py
 
 Demand prediction coding challenge for Uber
+    - 
 
 Created on Sep 20, 2013
 @author: ajsmith007@gmail.com
@@ -33,7 +34,7 @@ def index():
     return "Hello Flask World!"
 
 @app.route('/api/v1.0/tasks', methods = ['GET'])
-def get_tasks():
+def getTasks():
     return jsonify( { 'tasks': tasks } )
 
 if __name__ == '__main__':

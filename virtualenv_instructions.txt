@@ -1,0 +1,47 @@
+# Create a new PyDev project in Eclipse
+# or mkdir for Flask project
+
+# install virtualenv 
+pip install --upgrade virtualenv
+
+# set up virtualenv folder
+virtualenv venv
+
+# Start virtualenv (Windows)
+venv\scripts\activate
+
+# Python Packages
+pip install flask
+# if flask 10.1 (current) doesn't work
+#pip install flask==0.9		
+pip install flask-login
+pip install flask-openid
+pip install sqlalchemy==0.7.9
+pip install flask-sqlalchemy==0.16
+pip install sqlalchemy-migrate
+pip install flask-whooshalchemy==0.54a
+pip install flask-wtf==0.8.4
+pip install pytz==2013b
+pip install flask-babel==0.8
+pip install flup
+
+# Windows Only
+pip install --no-deps lamson chardet flask-mail
+
+
+######## NOT Working yet ########
+# Install easyinstall
+pip install easy_install
+
+easy_install numpy
+
+# Install Math/Stats packages (from GitHub if possible)
+pip install scipy
+#pip install git+http://github.com/scipy/scipy/
+pip install numpy
+#pip install git+http://github.com/numpy/numpy/
+pip install matplotlib
+############
+
+# leave the virtualenv session
+deactivate
