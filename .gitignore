@@ -33,6 +33,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+static/js/libs/jquery_validation
 
 # Translations
 *.mo
