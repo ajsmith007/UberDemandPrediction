@@ -13,12 +13,19 @@ Created on Sep 20, 2013
 from flask import Flask, jsonify, abort, render_template, send_from_directory
 import os
 import jinja2
+import json
 
-VERSION = "09.20"
+VERSION = "09.21"
 jinja_environment = jinja2.Environment(autoescape = True, # cgi escape set to autoescape
                                        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
 
 app = Flask(__name__)
+
+data = []
+with open('static/data/uber_demand_prediction_challenge.json') as f:
+    for line in f:
+        data.append(json.loads(line))
+
 
 tasks = [
     {
@@ -98,6 +105,10 @@ def getTaskByID(task_id):
     if len(task) == 0:
         abort(404)
     return jsonify( { 'task': task[0] } )
+
+@app.route('/api/v1/data', methods = ['GET'])
+def getData():
+    return jsonify( { 'data': data } )
 
 @app.route('/favicon.ico')
 def favicon():
