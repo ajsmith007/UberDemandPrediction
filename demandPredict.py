@@ -10,7 +10,7 @@ Created on Sep 20, 2013
 @author: ajsmith007@gmail.com
 '''
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort
 
 app = Flask(__name__)
 
@@ -33,9 +33,16 @@ tasks = [
 def index():
     return "Hello Flask World!"
 
-@app.route('/api/v1.0/tasks', methods = ['GET'])
+@app.route('/api/v1/tasks', methods = ['GET'])
 def getTasks():
     return jsonify( { 'tasks': tasks } )
+
+@app.route('/api/v1/tasks/<int:task_id>', methods = ['GET'])
+def getTaskByID(task_id):
+    task = filter(lambda t: t['id'] == task_id, tasks)
+    if len(task) == 0:
+        abort(404)
+    return jsonify( { 'task': task[0] } )
 
 if __name__ == '__main__':
     app.run(debug = True)
