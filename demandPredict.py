@@ -3,14 +3,20 @@
 '''
 demandPredict.py
 
-Demand prediction coding challenge for Uber
-    - 
+Coding Challenge for Uber
+Demand Prediction: Washington D.C. 
 
 Created on Sep 20, 2013
 @author: ajsmith007@gmail.com
 '''
 
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, render_template, send_from_directory
+import os
+import jinja2
+
+VERSION = "09.20"
+jinja_environment = jinja2.Environment(autoescape = True, # cgi escape set to autoescape
+                                       loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
 
 app = Flask(__name__)
 
@@ -30,8 +36,57 @@ tasks = [
 ]
 
 @app.route('/')
+@app.route('/index')
+@app.route('/index.html')
 def index():
-    return "Hello Flask World!"
+    user = { 'nickname': 'UberReviewer' } # fake user
+    return render_template('index.html',
+                           title = 'Uber Code Challenge',
+                           projectname = 'Demand Prediction',
+                           market = 'Washington D.C.',
+                           author = 'Drew Smith',
+                           version = VERSION,
+                           user = user)
+
+@app.route('/demand.html')
+def demand():
+    user = { 'nickname': 'UberReviewer' } # fake user
+    return render_template('demand.html',
+                           title = 'Uber Code Challenge',
+                           projectname = 'Demand Prediction',
+                           subtitle = 'Demand Prediction',
+                           market = 'Washington D.C.',
+                           author = 'Drew Smith',
+                           version = VERSION,
+                           user = user)
+
+@app.route('/api.html')
+@app.route('/api')
+@app.route('/api/')
+@app.route('/api/v1')
+@app.route('/api/v1/')
+def api():
+    user = { 'nickname': 'UberReviewer' } # fake user
+    return render_template('api.html',
+                           title = 'Uber Code Challenge',
+                           projectname = 'Demand Prediction',
+                           subtitle = 'API',
+                           market = 'Washington D.C.',
+                           author = 'Drew Smith',
+                           version = VERSION,
+                           user = user)
+
+@app.route('/methodology.html')
+def methodology():
+    user = { 'nickname': 'UberReviewer' } # fake user
+    return render_template('methodology.html',
+                           title = 'Uber Code Challenge',
+                           projectname = 'Demand Prediction',
+                           subtitle = 'Methodology',
+                           market = 'Washington D.C.',
+                           author = 'Drew Smith',
+                           version = VERSION,
+                           user = user)
 
 @app.route('/api/v1/tasks', methods = ['GET'])
 def getTasks():
@@ -43,6 +98,10 @@ def getTaskByID(task_id):
     if len(task) == 0:
         abort(404)
     return jsonify( { 'task': task[0] } )
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'img/favicon.ico')
 
 if __name__ == '__main__':
     app.run(debug = True)

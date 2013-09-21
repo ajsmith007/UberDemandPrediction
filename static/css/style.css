@@ -1,0 +1,85 @@
+.hero-unit h1 { letter-spacing: -.075em; }
+
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Keep navbar above content */
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+	color: #636669;
+}
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.navbar-wrapper {
+	position: relative;
+	z-index: 15;
+}
+
+.navbar-brand {
+	padding: 5px 25px;
+}
+
+.navbar-inverse .navbar-brand {
+	color: #BBB;
+	text-shadow: 0px 2px 1px #000;
+}
+
+.logo {
+	height: 45px;
+	width: 45px;
+}
+
+
+/* CUSTOMIZE THE JUMBOTRON
+-------------------------------------------------- */
+.container .jumbotron {
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+/*.jumbotron h2 {
+	font-size: 40px;
+	color: #FFF;
+	text-shadow: 0px 1px 5px #555;
+}
+
+.jumbotron h4 {
+	color: #EEE;
+	text-shadow: 0px 1px 3px #888;
+}*/
+
+
+/* CUSTOMIZE THE FEATURETTE
+-------------------------------------------------- */
+/* Round the image corners */
+.featurette .img-responsive {
+	border-radius: 10px
+}
+
+/* CUSTOMIZE THE FOOTER
+-------------------------------------------------- */
+.footer-buttons {
+   display: table; 
+   margin: 0 auto;
+}
+
+#social-buttons div {
+    float:center !important;
+    display:inline-block !important;
+    margin:0 10px 0 0 !important;
+    border:none;
+    overflow:hidden;
+}
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+
+}
+
+@media (min-width: 992px) {
+
+}

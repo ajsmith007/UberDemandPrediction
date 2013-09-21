@@ -1,0 +1,29 @@
+<hr class="col-sm-12 featurette-divider">
+<div class="col-sm-4" id="social-buttons">
+	<!-- LinkedIn Share Button -->
+	<script src="//platform.linkedin.com/in.js" type="text/javascript">
+		lang: en_US
+	</script>
+	<script type="IN/Share" data-url="http://www.linkedin.com/in/ajsmith007"></script>
+	<!-- Twitter Follow Button -->
+	<a href="https://twitter.com/WatermanDrew" class="twitter-follow-button" data-show-count="false">Follow @WatermanDrew</a>
+	<script>!function(d,s,id){
+		var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+		if(!d.getElementById(id)){
+			js=d.createElement(s);
+			js.id=id;
+			js.src=p+'://platform.twitter.com/widgets.js';
+			fjs.parentNode.insertBefore(js,fjs);
+		}
+	}(document, 'script', 'twitter-wjs');
+	</script>
+</div>
+<div class="col-sm-4 text-center">
+	Copyright &copy; 2013 Drew Smith 
+	<br>All rights reserved.
+	<br>Version: {{ version }}
+</div>
+<div class="col-sm-4 footer-buttons">
+	{% include 'disclaimer.html' %}
+	{% include 'terms.html' %}
+</div>
