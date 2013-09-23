@@ -48,24 +48,20 @@ pip install flup
 pip install --no-deps lamson chardet flask-mail
 
 ########
-# Install Math/Stats packages (from GitHub if possible) (Linux)
+# Math/Stat Package Dependancies (system specific) (Linux)
+sudo apt-get build-dep matplotlib
+sudo apt-get install freetype*
 
-sudo venv/bin/pip install numpy
+########
+# Install Math/Stats packages (from GitHub if possible) with Upgrade (Linux)
+sudo venv/bin/pip install -U numpy
 #sudo venv/bin/pip install git+http://github.com/numpy/numpy/
-
-sudo venv/bin/pip install scipy
+sudo venv/bin/pip install -U scipy
 #sudo venv/bin/pip install git+http://github.com/scipy/scipy/
-
 sudo venv/bin/pip install -U scikit-learn
-
-sudo venv/bin/pip install matplotlib
+sudo venv/bin/pip install -U matplotlib
 
 ########
 # leave the virtualenv session
 deactivate
 
-
-########
-# Dependancies (system specific) (Linux)
-
-sudo apt-get install freetype*
