@@ -71,6 +71,7 @@ for (i in 1:length(uber.data$json)) {
 
 # Append data.frame with info for Basic Histogram Analysis
 for (i in 1:length(uber.data$json)) {
+	# Days since official launch in this market
 	uber.data$dow[i] = weekdays(as.POSIXlt(uber.data$local[i])) # Day of Week (dow)
 	uber.data$hr[i] = strftime(uber.data$local[i], "%H")		# Hour
 	# Top of the hour
@@ -80,18 +81,28 @@ for (i in 1:length(uber.data$json)) {
 # Save data.frame to csv
 write.table(uber.data,file="analysis/UberData.csv",sep=",",row.names=F)
 
+##########################################################################
 # Basic Histogram Analysis
-#Generate Counts for each Hour reguardless of Day of the Week
+##########################################################################
+# Generate Counts for each Hour reguardless of Day of the Week
 hits.hour = count(uber.data, vars = "hr")
-ggplot2(data = hits.hour) + geom_bar(aes(x = hr, y = freq, fill = uber.data$dow), stat="identity", position = "dodge")
+plot.hr = ggplot(data = hits.hour) + geom_bar(aes(x = hr, y = freq), stat="identity", position = "dodge")
+print(plot.hr)
 
+# Pause
 print("Hit Enter to Continue...")
 readline()
 
-#Generate Counts for each Hour with Day of the Week (dow)
+# Generate Counts for each Hour with Day of the Week (dow)
 hits.hour_dow = count(uber.data, vars = c("hr","dow"))
-ggplot(data = hits.hour_dow) + geom_bar(aes(x = hr, y = freq, fill = uber.data$dow), stat="identity", position = "dodge")
+plot.hr_dow= ggplot(data = hits.hour_dow) + geom_bar(aes(x = hr, y = freq), stat="identity", position = "dodge")
+print(plot.hr_dow)
 
+# Pause
+print("Hit Enter to Continue...")
+readline()
+
+print("End of Basic Historam Analysis...")
 
 ##########################################################################
 ## Generate a complete minute by minute based data.frame timeline of data and events 
