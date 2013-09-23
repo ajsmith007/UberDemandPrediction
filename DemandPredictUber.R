@@ -153,7 +153,7 @@ hits.mdh = count(uber.data, vars = c("mdh", "doy"))
 plot.mdh = ggplot(data = hits.mdh) + 
 	geom_bar(aes(x = mdh, y = freq), stat="identity", position = "dodge") +
 	scale_x_discrete(hits.mdh$doy) +
-	theme(axis.text.x=element_text(size=8, angle=90, vjust=1)) +
+	theme(axis.text.x=element_text(size=8, angle=90, vjust=1))
 print(plot.mdh)
 Pause()
 
