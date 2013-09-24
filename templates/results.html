@@ -5,7 +5,7 @@
   </head> 
   <body>
   <!-- NAVBAR  -->
-    {% set active_page = "demand" %}
+    {% set active_page = "results" %}
     {% include 'navbar.html' %}
     
     <!-- Main Container --> 
@@ -14,10 +14,17 @@
       <!-- Title banner with headlines -->  
       <div class="jumbotron">
         <h2>{{ title }}{% if subtitle %}: {{ subtitle }} {% endif %}</h2>
-        <h4> {{ projectname }}: {{ market }}</h4>
+        <h4> {{ market }}: {{ location }}</h4>
         <h4 class="text-muted"> Presented By: {{ author }}</h4>
       </div>
       <!-- CONTENT -->
+      
+      <hr class="featurette-divider">
+      <div class="row featurette">
+        <div class="col-md-8">
+      		<h3>Results</h3>
+      	</div>
+      </div>
       
       <!-- FOOTER -->
       <footer>

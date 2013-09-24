@@ -26,7 +26,8 @@ data = []
 with open('static/data/uber_demand_prediction_challenge.json') as f:
     for line in f:
         data.append(json.loads(line))
- 
+
+model = []
 #with open('static/data/uber_demand_prediction_challenge_model.json') as json_file:    
 #    model = json.load(json_file)
 
@@ -105,7 +106,7 @@ prediction = [
 ]
 
 
-# Errors
+# Error Responses
 @app.errorhandler(400)
 def not_found400(error):
     return make_response(jsonify( { 'error': 'Bad request' } ), 400)
@@ -127,23 +128,23 @@ def index():
 #                 # Include Admin Functions
     user = { 'nickname': 'UberReviewer' } # fake user - pull from OAuth login
     return render_template('index.html',
-                           title = 'Uber Code Challenge',
-                           projectname = 'Demand Prediction',
-                           market = 'Washington D.C.',
+                           title = 'Uber Demand Prediction Challenge',
+                           market = 'Market',
+                           location = 'Washington D.C.',
                            author = 'Drew Smith',
                            #userID = user.user_id(),
                            #userNickname = user.nickname(),
                            version = VERSION,
                            user = user)
 
-@app.route('/demand.html')
-def demand():
+@app.route('/results.html')
+def results():
     user = { 'nickname': 'UberReviewer' } # fake user - pull from OAuth login
-    return render_template('demand.html',
-                           title = 'Uber Code Challenge',
-                           projectname = 'Demand Prediction',
-                           subtitle = 'Demand Prediction',
-                           market = 'Washington D.C.',
+    return render_template('results.html',
+                           title = 'Uber Demand Prediction Challenge',
+                           subtitle = 'Results',
+                           market = 'Market',
+                           location = 'Washington D.C.',
                            author = 'Drew Smith',
                            version = VERSION,
                            user = user)
@@ -152,10 +153,10 @@ def demand():
 def methodology():
     user = { 'nickname': 'UberReviewer' } # fake user - pull from OAuth login 
     return render_template('methodology.html',
-                           title = 'Uber Code Challenge',
-                           projectname = 'Demand Prediction',
+                           title = 'Uber Demand Prediction Challenge',
                            subtitle = 'Methodology',
-                           market = 'Washington D.C.',
+                           market = 'Market',
+                           location = 'Washington D.C.',
                            author = 'Drew Smith',
                            version = VERSION,
                            user = user)
@@ -166,14 +167,15 @@ def methodology():
 def api():
     user = { 'nickname': 'UberReviewer' } # fake user - pull from OAuth login
     return render_template('api.html', 
-                           title = 'Uber Code Challenge',
-                           projectname = 'Demand Prediction',
+                           title = 'Uber Demand Prediction Challenge',
                            subtitle = 'API',
-                           market = 'Washington D.C.',
+                           market = 'Market',
+                           location = 'Washington D.C.',
                            author = 'Drew Smith',
                            version = VERSION,
                            user = user)
 
+# API calls
 @app.route('/api/v1/data', methods = ['GET'])
 def getData():
     return jsonify( { 'data': data } )
@@ -195,6 +197,7 @@ def getPredictionDateTime(datetime):
         return make_response(jsonify( { 'error': 'Not found' } ), 404) #abort(404) #  datetime not found
     return jsonify( { 'prediction': predict[0] } )
 
+# favicon
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'img/favicon.ico')
