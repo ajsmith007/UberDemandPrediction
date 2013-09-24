@@ -7,12 +7,14 @@ Coding Challenge for Uber
 Demand Prediction: Washington D.C. 
 
 Created on Sep 20, 2013
+Completed on Sep 24, 2013
 @author: ajsmith007@gmail.com
 '''
 
 from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
 import os
 import jinja2
+import datetime
 import json
 
 VERSION = "2013.09.23"
@@ -105,6 +107,46 @@ prediction = [
     },
 ]
 
+# Prep Data and Demand Prediction Model
+def predictFutureDemand(self, dt):
+    # Model of future demand from input datetime
+    prediction = 99         # prediction placeholder
+    return prediction  
+      
+def genPredictionVars(self, futuredt):
+    # Convert input ISO format datetime "2012-05-01T00:00:00" to python datetime (dt) object
+    import dateutil.parser
+    dt = dateutil.parser.parse(futuredt)
+        
+    # Computed derived vars for predict model
+    doe = dt - datetime.datetime.utcfromtimestamp(0)
+#         epoch = datetime.datetime.utcfromtimestamp(0)
+#         #print epoch
+#         #1970-01-01 00:00:00
+#         #today = datetime.datetime.today()
+#         d = today - epoch
+#         #print d
+#         #13196 days, 9:50:44.266200
+#         #print d.days # timedelta object
+#         #13196
+    
+    doy = dt.timetuple().tm_yday
+    dow = dt.strftime("%A")
+    n_dow = dt.isoweekday()
+    
+    prediction = predictFutureDemand(dt)
+    
+    # Compile results into a dict
+    results = {'doe': doe.day,
+               'doy': doy,
+               'dow': dow,
+               'n_dow': n_dow,
+               'prediction': prediction
+    }
+    
+    # Return json object of prediction with derived vars
+    return jsonify(results)
+
 
 # Error Responses
 @app.errorhandler(400)
@@ -114,6 +156,7 @@ def not_found400(error):
 @app.errorhandler(404)
 def not_found404(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
+
 
 # Routes
 @app.route('/')
@@ -175,6 +218,7 @@ def api():
                            version = VERSION,
                            user = user)
 
+
 # API calls
 @app.route('/api/v1/data', methods = ['GET'])
 def getData():
@@ -201,6 +245,7 @@ def getPredictionDateTime(datetime):
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'img/favicon.ico')
+
 
 # Main
 if __name__ == '__main__':

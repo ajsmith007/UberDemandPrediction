@@ -51,7 +51,13 @@ switch(Sys.info()[['sysname']],
        Darwin = {cat("I'm a Mac. Working Directory Not Set!\n")}
 )
 
-source('local_functions.R') # local functions
+#memory.limit(size=8000)	# set a higher memory limit (in MB)
+source('local_functions.R') 	# local functions
+
+##########################################################################
+## Check to see if RData exists and load to save time
+
+# else read json and derive vars
 
 ##########################################################################
 ## Read UBER json file
@@ -59,6 +65,7 @@ source('local_functions.R') # local functions
 cat("Reading JSON data...\n")
 file <- '../static/data/uber_demand_prediction_challenge.json'
 data.json <- fromJSON(file=file, method='C')
+
 
 ##########################################################################
 ## Create new UBER data.frame for event times and append modified date/time vars
@@ -76,7 +83,8 @@ for (i in 1:length(uber.data$json)) {
 }
 toc()
 
-# Append data.frame with info for Basic Histogram Analysis
+# Append data.frame with info for Basic Histogram and Regression Analysis 
+# [FIXME - might be faster as matrix]
 cat("Computing Day of the Week (dow) and Hourly Data...\n")
 tic()
 for (i in 1:length(uber.data$json)) {
@@ -92,7 +100,9 @@ for (i in 1:length(uber.data$json)) {
 }
 toc()
 
-# Add numeric to start of Day of Week for better display (n_dow = "n-dow")
+# Add numeric to start of Day of Week for better display (n_dow = "n-dow") 
+# [FIXME - compute in previous loop using wday() in local_functions.R]
+cat("Adding numeric prefix to dow...\n")
 tic()
 for (d in 1:length(uber.data$json)){
 	if(uber.data$dow[d] == "Sunday"){ 
@@ -114,7 +124,10 @@ for (d in 1:length(uber.data$json)){
 toc()
 
 # Save data.frame to csv
-write.table(uber.data,file="analysis/UberData.csv",sep=",",row.names=F)
+cat("Saving data.frame to csv...\n")
+tic()
+write.table(uber.data,file="../analysis/UberData.csv",sep=",",row.names=F)
+toc()
 
 ##########################################################################
 # Basic Histogram Analysis
@@ -136,7 +149,7 @@ Pause()
 hits.hour_dow_n = count(uber.data, vars = c("hr","n_dow"))
 plot.hr_dow_n = ggplot(data = hits.hour_dow_n) + 
 	geom_bar(aes(x = hr, y = freq, fill=n_dow), stat="identity", position = "dodge") +
-	scale_fill_brewer(palette="GnBu")
+	scale_fill_brewer(palette="Blues")
 print(plot.hr_dow_n)
 Pause()
 
