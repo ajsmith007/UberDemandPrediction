@@ -7,6 +7,15 @@ body {
 	padding-top: 60px;
 	padding-bottom: 40px;
 	color: #636669;
+
+    margin: 0;
+    /*
+    background: url('../img/carbon_fiber.jpg');
+    background-repeat:no-repeat;
+    background-position:center;
+    */
+    background-color:black; 
+    
 }
 
 /* CUSTOMIZE THE NAVBAR
@@ -36,19 +45,33 @@ body {
 /* CUSTOMIZE THE JUMBOTRON
 -------------------------------------------------- */
 .container .jumbotron {
-	background-color: rgba(0, 0, 0, 0.2);
+	background-color: rgba(0, 0, 0, 0.8);
+    position: relative;
+    z-index: 3;
 }
 
-/*.jumbotron h2 {
-	font-size: 40px;
+.jumbotron:after {
+    background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,1)), url("../img/WashingtonMonument.jpg");
+    bottom: 0;
+    content: "";
+    display: block;
+    left: 0;
+    opacity: 0.4;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.jumbotron h2 {
+	/*font-size: 40px;*/
 	color: #FFF;
-	text-shadow: 0px 1px 5px #555;
+	/*text-shadow: 0px 1px 5px #555;*/
 }
 
 .jumbotron h4 {
 	color: #EEE;
-	text-shadow: 0px 1px 3px #888;
-}*/
+	/*text-shadow: 0px 1px 3px #888;*/
+}
 
 
 /* CUSTOMIZE THE FEATURETTE
