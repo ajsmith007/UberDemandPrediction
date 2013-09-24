@@ -46,8 +46,8 @@ library(extrafont)
 ## Set the working directory based on OS
 cat("Setting the working directory...\n")
 switch(Sys.info()[['sysname']],
-       Windows= {setwd("C:\\Users\\ajsmith\\workspace\\demandPredictUber\\")},
-       Linux  = {setwd("~/workspace/demandPredictUber/")},
+       Windows= {setwd("C:\\Users\\ajsmith\\workspace\\demandPredictUber\\Rscripts\\")},
+       Linux  = {setwd("~/workspace/demandPredictUber/Rscripts/")},
        Darwin = {cat("I'm a Mac. Working Directory Not Set!\n")}
 )
 
@@ -57,7 +57,7 @@ source('local_functions.R') # local functions
 ## Read UBER json file
 ##########################################################################
 cat("Reading JSON data...\n")
-file <- 'static/data/uber_demand_prediction_challenge.json'
+file <- '../static/data/uber_demand_prediction_challenge.json'
 data.json <- fromJSON(file=file, method='C')
 
 ##########################################################################
