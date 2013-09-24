@@ -45,18 +45,18 @@ body {
 /* CUSTOMIZE THE JUMBOTRON
 -------------------------------------------------- */
 .container .jumbotron {
-	background-color: rgba(0, 0, 0, 0.8);
+	background-color: rgba(0, 0, 0, 0.9);
     position: relative;
     z-index: 3;
 }
 
 .jumbotron:after {
-    background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,1)), url("../img/WashingtonMonument.jpg");
+    background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,1)), url("../img/WashingtonMonument_med.jpg") no-repeat;
     bottom: 0;
     content: "";
     display: block;
     left: 0;
-    opacity: 0.4;
+    opacity: 0.5;
     position: absolute;
     right: 0;
     top: 0;
