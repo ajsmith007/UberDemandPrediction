@@ -10,7 +10,7 @@ Created on Sep 20, 2013
 @author: ajsmith007@gmail.com
 '''
 
-from flask import Flask, jsonify, abort, render_template, send_from_directory, request, make_response
+from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
 import os
 import jinja2
 import json
@@ -21,10 +21,14 @@ jinja_environment = jinja2.Environment(autoescape = True, # cgi escape set to au
 
 app = Flask(__name__)
 
+# Original and Derived Data
 data = []
 with open('static/data/uber_demand_prediction_challenge.json') as f:
     for line in f:
         data.append(json.loads(line))
+ 
+#with open('static/data/uber_demand_prediction_challenge_model.json') as json_file:    
+#    model = json.load(json_file)
 
 # Temporary Data
 prediction = [
@@ -34,8 +38,8 @@ prediction = [
         'day': 30,
         'hour': 20,
         'doy': 121,
-        'dow': u'Tuesday',
-        'n_dow': u'2-Tuesday',
+        'dow': u'Monday',
+        'n_dow': u'1-Monday',
         'date': u'04-30-2012',
         'datetime_et': u'04-30-2012T20:00:00 EST',
         'datetime_utc': u'05-01-2012T00:00:00 UTC',
@@ -48,8 +52,8 @@ prediction = [
         'day': 30,
         'hour': 21,
         'doy': 121,
-        'dow': u'Tuesday',
-        'n_dow': u'2-Tuesday',
+        'dow': u'Monday',
+        'n_dow': u'1-Monday',
         'date': u'04-30-2012',
         'datetime_et': u'04-30-2012T21:00:00 EST',
         'datetime_utc': u'05-01-2012T01:00:00 UTC',
@@ -62,9 +66,9 @@ prediction = [
         'day': 30,
         'hour': 22,
         'doy': 121,
-        'dow': u'Tuesday',
-        'n_dow': u'1-Tuesday',
-        'date': u'05-01-2012',
+        'dow': u'Monday',
+        'n_dow': u'1-Monday',
+        'date': u'04-30-2012',
         'datetime_et': u'04-30-2012T22:00:00 EST',
         'datetime_utc': u'05-01-2012T02:00:00 UTC',
         'datetime': u'05-01-2012T02:00:00',
@@ -101,21 +105,6 @@ prediction = [
 ]
 
 
-tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol', 
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web', 
-        'done': False
-    }
-]
-
 # Errors
 @app.errorhandler(400)
 def not_found400(error):
@@ -127,7 +116,7 @@ def not_found404(error):
 
 # Routes
 @app.route('/')
-@app.route('/index')
+@app.route('/index/')
 @app.route('/index.html')
 def index():
 #    # Get current user
@@ -172,9 +161,7 @@ def methodology():
                            user = user)
 
 @app.route('/api.html')
-@app.route('/api')
 @app.route('/api/')
-@app.route('/api/v1')
 @app.route('/api/v1/')
 def api():
     user = { 'nickname': 'UberReviewer' } # fake user - pull from OAuth login
@@ -187,20 +174,13 @@ def api():
                            version = VERSION,
                            user = user)
 
-@app.route('/api/v1/tasks', methods = ['GET'])
-def getTasks():
-    return jsonify( { 'tasks': tasks } )
-
-@app.route('/api/v1/tasks/<int:task_id>', methods = ['GET'])
-def getTaskByID(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
-    if len(task) == 0:
-        return make_response(jsonify( { 'error': 'Not found' } ), 404) #abort(404) # task not found
-    return jsonify( { 'task': task[0] } )
-
 @app.route('/api/v1/data', methods = ['GET'])
 def getData():
     return jsonify( { 'data': data } )
+
+@app.route('/api/v1/model', methods = ['GET'])
+def getModel():
+    return model
 
 @app.route('/api/v1/prediction', methods = ['GET'])
 def getPrediction():
@@ -208,9 +188,9 @@ def getPrediction():
         return jsonify( { 'prediction': prediction } )
     return make_response(jsonify( { 'error': 'Not found' } ), 404) #abort(404) #  GET request not included
     
-@app.route('/api/v1/prediction/<string:datetime>', methods = ['GET'])
+@app.route('/api/v1/prediction/<datetime>', methods = ['GET'])
 def getPredictionDateTime(datetime):
-    predict = filter(lambda t: t['datetime'] == 'datetime', prediction)
+    predict = filter(lambda t: t['datetime'] == datetime, prediction)
     if len(predict) == 0:
         return make_response(jsonify( { 'error': 'Not found' } ), 404) #abort(404) #  datetime not found
     return jsonify( { 'prediction': predict[0] } )

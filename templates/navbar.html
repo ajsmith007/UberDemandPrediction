@@ -1,0 +1,51 @@
+<!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://www.uber.com" target="_blank">
+					<img class="logo" src="{{ url_for('static', filename='img/UBER-logo.png') }}">
+				</a>
+			</div>
+			<!-- Everything you want hidden at 992px or less, place within here -->
+			<div class="navbar-collapse collapse">
+			  <ul class="nav navbar-nav">
+			    {% set navbarSettings = [
+					('/', 'index', 'Home', 'glyphicon glyphicon-home white'),
+					('/methodology.html', 'methodology', 'Methodology', ''),
+					('/demand.html', 'demand', 'Demand Prediction', ''),
+					('/api.html', 'api', 'API', ''),
+			    ] -%}
+			    {% set active_page = active_page -%}
+			    {% for href, id, caption, icon in navbarSettings %}
+  			  	<li{% if id == active_page %} class="active"{% endif %}>
+					<a href="{{ href|e }}"><i class="{{ icon }}"></i> {{ caption|e }}</a>
+			    </li>
+				{% endfor %}
+				
+				<li class="dropdown">
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Who is this guy? <b class="caret"></b></a>
+				  <ul class="dropdown-menu">
+					<li ><a href="http://www.linkedin.com/in/ajsmith007" target="_blank">LinkedIn</a></li>
+					<li ><a href="https://twitter.com/WatermanDrew" target="_blank">Twitter</a></li>
+				  </ul>
+				</li>
+			  </ul>
+			  <div class="nav pull-right">
+                <p class="navbar-text">
+                    <a href="http://www.linkedin.com/in/ajsmith007" target="_blank">
+                    	<img src="{{ url_for('static', filename='img/linkedin.png') }}" alt="LinkedIn" title="LinkedIn"/>
+                    </a>
+                    <a href="https://twitter.com/#!/WatermanDrew" target="_blank">
+                    	<img src="{{ url_for('static', filename='img/twitter.png') }}" alt="Twitter" title="Twitter"/>
+                    	</a>
+                </p>
+            </div>
+          </div><!--/.nav-collapse -->
+      </div><!--/.container -->
+    </div><!--/.navbar navbar-default navbar-fixed-top -->
+    

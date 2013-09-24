@@ -4,55 +4,39 @@
 	{% include 'head.html' %}
   </head> 
   <body>
-  <!-- NAVBAR ================================================== -->
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="http://www.uber.com" target="_blank"><img class="logo" src="{{ url_for('static', filename='img/UBER-logo.png') }}"></a>
-			</div>
-			<!-- Everything you want hidden at 992px or less, place within here -->
-			<div class="navbar-collapse collapse">
-			  <ul class="nav navbar-nav">
-				<li ><a href="/"><i class="glyphicon glyphicon-home white"></i> Home</a></li>
-				<li ><a href="/demand.html">Demand Forecast</a></li>
-				<li class="active"><a href="/api.html">API</a></li>
-				<li ><a href="/methodology.html">Methodology</a></li>
-				<li class="dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Who is this guy? <b class="caret"></b></a>
-				  <ul class="dropdown-menu">
-					<li ><a href="http://www.linkedin.com/in/ajsmith007" target="_blank" class="pull-right">LinkedIn</a></li>
-					<li ><a href="https://twitter.com/WatermanDrew" target="_blank" class="pull-right">Twitter</a></li>
-				  </ul>
-				</li>
-			  </ul>
-			  <div class="nav pull-right">
-                <p class="navbar-text">
-                    <a href="http://www.linkedin.com/in/ajsmith007" target="_blank"><img src="{{ url_for('static', filename='img/linkedin.png') }}" alt="LinkedIn" title="LinkedIn" /></a>
-                    <a href="https://twitter.com/#!/WatermanDrew" target="_blank"><img src="{{ url_for('static', filename='img/twitter.png') }}" alt="Twitter" title="Twitter" /></a>
-                </p>
-              </div>
-            </div><!--/.nav-collapse -->
-      </div><!--/.container -->
-    </div><!--/.navbar navbar-default navbar-fixed-top -->
+  <!-- NAVBAR  -->
+    {% set active_page = "api" %}
+    {% include 'navbar.html' %}
     
+    <!-- Main Container --> 
     <div class="container">
-      <!-- Main component for a primary marketing message or call to action -->
-	  
+    
+      <!-- Title banner with headlines -->  
       <div class="jumbotron">
-        <h2>{{ title }}: {{ subtitle }}</h2>
+        <h2>{{ title }}{% if subtitle %}: {{ subtitle }} {% endif %}</h2>
         <h4> {{ projectname }}: {{ market }}</h4>
         <h4 class="text-muted"> Presented By: {{ author }}</h4>
+      </div>
+      <!-- CONTENT -->
+      
+      <div class="col-md-10">
+      	<h3>Welcome to Drew's Uber Coding Challenge API!</h3>
+      	<h4>API Version 1 (v1)</h4>
+      	<br>
+      	<p>This RESTful API has two main components:</p>     	
+		<h4>Data API</h4>
+      	<p>GET Original Uber Data: <a href="http://localhost:5000/api/v1/data">http://localhost:5000/api/v1/data</a>
+      	<p>GET the Data used to Train the Prediction Model: <a href="http://localhost:5000/api/v1/model">http://localhost:5000/api/v1/model</a>
+      	<br><br>
+      	<h4>Demand Prediction API</h4>
+      	<p>GET Demand Prediction Data: <a href="http://localhost:5000/api/v1/prediction">http://localhost:5000/api/v1/prediction</a>
+      	<p>GET Demand Prediction Data for Specific Date and Hour: <a href="http://localhost:5000/api/v1/prediction/05-01-2012T00:00:00">http://localhost:5000/api/v1/prediction/MM-DD-YYYTHH:MM:SS</a>
+      	<br><br>
       </div>
       
       <!-- FOOTER -->
       <footer>
-	  {% include 'footer.html' %}
+	    {% include 'footer.html' %}
       </footer>
       
     </div><!-- /.container -->
