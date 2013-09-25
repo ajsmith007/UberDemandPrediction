@@ -30,6 +30,9 @@ if('plyr' %in% rownames(installed.packages()) == FALSE)
 if('ggplot2' %in% rownames(installed.packages()) == FALSE) 
 {install.packages('ggplot2', dependencies=T)}
 
+if('car' %in% rownames(installed.packages()) == FALSE) 
+{install.packages('car', dependencies=T)}
+
 if('extrafont' %in% rownames(installed.packages()) == FALSE) 
 {install.packages('extrafont', dependencies=T)}
 
@@ -41,6 +44,7 @@ library(rjson)
 #library(RJSONIO)
 library(plyr)
 library(ggplot2)
+library(car)
 library(extrafont)
 
 ## Set the working directory based on OS
@@ -55,9 +59,15 @@ switch(Sys.info()[['sysname']],
 source('local_functions.R') 	# local functions
 
 ##########################################################################
-## Check to see if RData exists and load to save time
+## Check to see if UberData.csv exists and not altered --> load csv to save time
+##########################################################################
+csvFile = "../analysis/UberData.csv"
+csvAltered = TRUE		# FIXME - Bad csv export everytime after row 17265!
+if (file.exists(csvFile) && (csvAltered == FALSE)){
+	cat("Reading data from CSV file...\n")
+	uber.data = read.csv("../analysis/UberDataNA.csv")
 
-# else read json and derive vars
+} else { 				# Read json file from Uber and derive analysis vars 
 
 ##########################################################################
 ## Read UBER json file
@@ -66,15 +76,14 @@ cat("Reading JSON data...\n")
 file <- '../static/data/uber_demand_prediction_challenge.json'
 data.json <- fromJSON(file=file, method='C')
 
-
 ##########################################################################
 ## Create new UBER data.frame for event times and append modified date/time vars
 ##########################################################################
 cat("Initializing data frame...\n")
-# Initialize data frame with JSON data
+## Initialize data frame with JSON data
 uber.data <- data.frame(json=data.json)
 
-# Convert JSON UTC times to ISO8601 and local Washington DC time
+## Convert JSON UTC times to ISO8601 and local Washington DC time
 cat("Formatting UTC and computing localtime...\n")
 tic()
 for (i in 1:length(uber.data$json)) {
@@ -83,24 +92,26 @@ for (i in 1:length(uber.data$json)) {
 }
 toc()
 
-# Append data.frame with info for Basic Histogram and Regression Analysis 
-# [FIXME - might be faster as matrix]
+## Append data.frame with info for Basic Histogram and Regression Analysis 
+# [FIXME - might be faster as matrix instead of ~8-12mins for data.frame with ~90sec per variable computation]
 cat("Computing Day of the Week (dow) and Hourly Data...\n")
 tic()
 for (i in 1:length(uber.data$json)) {
-	uber.data$doy[i] = strptime(uber.data$local[i], "%Y-%m-%d %H:%M:%S")$yday+1	# Day of Year
-	# Days since official launch in this market
-	uber.data$mnthday[i] = strftime(uber.data$local[i], "%m-%d")	# Month and Day
-	uber.data$mdh[i] = strftime(uber.data$local[i], "%m-%d %H00")	# Month, Day and Hour
-	uber.data$dow[i] = weekdays(as.POSIXlt(uber.data$local[i])) 	# Day of Week (dow)
-	uber.data$hr[i] = strftime(uber.data$local[i], "%H")			# Hour
+for (i in 17265:17265){
+	uber.data$doe[i] = as.integer(strptime(uber.data$local[i], "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d"))# Day of Epoch (~106.52 sec)
+	uber.data$doy[i] = strptime(uber.data$local[i], "%Y-%m-%d %H:%M:%S")$yday+1	# Day of Year (~89.62 sec)
+	# Days since Official Launch in this Market (Which? Uber: ~2011; UberX: ~2012)
+	uber.data$mnthday[i] = strftime(uber.data$local[i], "%m-%d")	# Month and Day (~100.1 sec with warnings --> NA errors) 
+	uber.data$mdh[i] = strftime(uber.data$local[i], "%m-%d %H00")	# Month, Day and Hour (~98.7 sec with warnings --> NA errors)
+	uber.data$dow[i] = weekdays(as.POSIXlt(uber.data$local[i])) 	# Day of Week (dow) (~86.02 sec)
+	uber.data$hr[i] = strftime(uber.data$local[i], "%H")			# Hour (~90.22 sec)
 	# Top of the hour
 	# Botom of the hour
-	uber.data$min[i] = strftime(uber.data$local[i], "%M")			# Minute
+	uber.data$min[i] = strftime(uber.data$local[i], "%M")			# Minute (~89.44 sec)
 }
 toc()
 
-# Add numeric to start of Day of Week for better display (n_dow = "n-dow") 
+## Add numeric to start of Day of Week for better display (n_dow = "n-dow") 
 # [FIXME - compute in previous loop using wday() in local_functions.R]
 cat("Adding numeric prefix to dow...\n")
 tic()
@@ -123,29 +134,39 @@ for (d in 1:length(uber.data$json)){
 }
 toc()
 
-# Save data.frame to csv
-cat("Saving data.frame to csv...\n")
-tic()
-write.table(uber.data,file="../analysis/UberData.csv",sep=",",row.names=F)
-toc()
+## Flag to resave uber.data as csv file if data.frame altered or appended in analysis
+# csvAltered = TRUE
+
+if (csvAltered == TRUE){
+	# Save data.frame to csv for faster analysis next time
+	cat("Saving data.frame to csv...\n")
+	tic()
+	write.table(uber.data,file="../analysis/UberDataNA.csv",sep=",",row.names=F)
+	toc()
+}
+
+} ## END file.exists
+
+## Call browser to pause script here - hit 'Q' to continue with regular prompt 
+browser()
 
 ##########################################################################
 # Basic Histogram Analysis
 ##########################################################################
 cat("Beginning basic histogram analysis...\n")
-# Generate Counts for each Hour reguardless of Day of the Week
+## Generate Counts for each Hour reguardless of Day of the Week
 hits.hour = count(uber.data, vars = "hr")
 plot.hr = ggplot(data = hits.hour) + geom_bar(aes(x = hr, y = freq), stat="identity", position = "dodge")
 print(plot.hr)
 Pause()
 
-# Generate Counts for each Hour with Day of the Week (dow)
+## Generate Counts for each Hour with Day of the Week (dow)
 hits.hour_dow = count(uber.data, vars = c("hr","dow"))
 plot.hr_dow = ggplot(data = hits.hour_dow) + geom_bar(aes(x = hr, y = freq), stat="identity", position = "dodge")
 print(plot.hr_dow)
 Pause()
 
-# Generate Counts for each Hour with Day of the Week (dow)
+## Generate Counts for each Hour with Day of the Week (dow)
 hits.hour_dow_n = count(uber.data, vars = c("hr","n_dow"))
 plot.hr_dow_n = ggplot(data = hits.hour_dow_n) + 
 	geom_bar(aes(x = hr, y = freq, fill=n_dow), stat="identity", position = "dodge") +
@@ -153,7 +174,7 @@ plot.hr_dow_n = ggplot(data = hits.hour_dow_n) +
 print(plot.hr_dow_n)
 Pause()
 
-# Generate Counts for each Minute of the Day (reguardless of Day of the Week)
+## Generate Counts for each Minute of the Day (reguardless of Day of the Week)
 hits.min = count(uber.data, vars = "min")
 plot.min = ggplot(data = hits.min) + 
 	geom_bar(aes(x = min, y = freq), stat="identity", position = "dodge") +
@@ -161,7 +182,7 @@ plot.min = ggplot(data = hits.min) +
 print(plot.min)
 Pause()
 
-# Generate Counts for each Hour of the Day for the Whole Time Series
+## Generate Counts for each Hour of the Day for the Whole Time Series
 hits.mdh = count(uber.data, vars = c("mdh", "doy"))
 plot.mdh = ggplot(data = hits.mdh) + 
 	geom_bar(aes(x = mdh, y = freq), stat="identity", position = "dodge") +
@@ -170,7 +191,7 @@ plot.mdh = ggplot(data = hits.mdh) +
 print(plot.mdh)
 Pause()
 
-# Generate Counts for each Month-Day combo
+## Generate Counts for each Month-Day combo
 hits.mnthday = count(uber.data, vars = c("mnthday", "n_dow"))
 plot.mnthday = ggplot(data = hits.mnthday ) + 
 	geom_bar(aes(x = mnthday, y = freq), stat="identity", position = "dodge") +
@@ -186,7 +207,7 @@ Pause()
 # Basic Regression Analysis
 ##########################################################################
 cat("Beginning basic regression analysis...\n")
-# Simple Linear Model
+## Simple Linear Model Day of Year vs Frequency
 x = hits.mdh$doy
 y = hits.mdh$freq
 new <- data.frame(x = seq(1, 365, 1))
@@ -200,14 +221,14 @@ matplot(new$x, cbind(pred.w.clim, pred.w.plim[,-1]),
 
 linear.mdl$fit[122:130]
 
-# Scatterplot with regression
+## Scatterplot with regression
 ggplot(hits.mnthday, aes(x = mnthday, y = freq, group = 1)) +
 	geom_point(shape=1) +
 	xlab("MM-DD") +
 	theme(axis.text.x=element_text(size=8, angle=90, vjust=1)) +
 	geom_smooth(method=lm, formula = y ~ x, se = FALSE)
 
-# Scatterplot with seperate n_dow regression 
+## Scatterplot with seperate n_dow regression 
 ggplot(hits.mnthday, aes(x = mnthday, y = freq, group = n_dow, color=n_dow)) +
 	geom_point() +
 	geom_point(aes(shape=n_dow)) +
@@ -216,7 +237,8 @@ ggplot(hits.mnthday, aes(x = mnthday, y = freq, group = n_dow, color=n_dow)) +
 	stat_smooth(method=lm, formula = y ~ x ,
 			se=FALSE,    	# Don't add shaded confidence region
                 	fullrange=F) + 	# Extend regression lines
-	scale_color_brewer(palette="GnBu")
+	scale_color_brewer(palette="GnBu")+theme_black()
+
 
 ##########################################################################
 ## Generate a complete minute by minute based data.frame timeline of data and events 
@@ -246,6 +268,117 @@ ggplot(hits.mnthday, aes(x = mnthday, y = freq, group = n_dow, color=n_dow)) +
 #	#Weekday as string
 #	 weekdays(as.POSIXlt(uber.data$local[i])))
 #}
+
+##########################################################################
+## Study of Day of Epoch, Hour, and Day of Week for Demand Prediction
+##########################################################################
+
+## Generate Counts for each Day of Epoch, Hour, and Day of Week
+hits.doe = count(uber.data, vars = c("doe", "n_dow", "dow", "hr"))
+plot.doe = ggplot(data = hits.doedow ) + 
+	geom_bar(aes(x = doe, y = freq), stat="identity", position = "dodge") +
+	xlab("Day of Epoch") +
+	theme(axis.text.x=element_text(size=8, angle=90, vjust=1))
+print(plot.doe)
+Pause()
+
+## Scatterplot with seperate n_dow regression 
+ggplot.doe = ggplot(hits.doe, aes(x = doe, y = freq, group = n_dow, color=n_dow)) +
+	geom_point() +
+	geom_point(aes(shape=n_dow)) +
+	xlab("Day of Epoch") +
+	theme(axis.text.x=element_text(size=8, angle=90, vjust=1)) +
+	stat_smooth(method=lm, formula = y ~ x ,
+			se=FALSE,    	# Don't add shaded confidence region
+                	fullrange=FALSE) + 	# Extend regression lines
+	scale_color_brewer(palette="Blues") +
+	theme_black()
+
+ggplot.doe  +
+	scale_fill_discrete(name="Day of the Week")
+
+## Scatterplot with regression
+ggplot(hits.doe, aes(x = doe, y = freq, group = 1)) +
+	geom_point(shape=1) +
+	xlab("Day of Epoch") +
+	theme(axis.text.x=element_text(size=8, angle=90, vjust=1)) +
+	geom_smooth(method=lm, formula = y ~ x, se = FALSE)
+
+
+## Linear Model Day of Epoch (doe), Hour of Day (hr) and Day of Week (dow) vs Frequency
+freq = hits.doe$freq
+doe = hits.doe$doe
+
+# Linear Model
+linear.mdl = lm(freq ~ doe)
+summary(linear.mdl)
+coef(linear.mdl)
+
+par(mfrow = c(2, 2), pty = "s") # 2x2 square plots
+plot(linear.mdl)
+
+#predict()
+
+# Polynomial Models
+poly2.mdl = lm(freq ~ poly(doe, 2))
+summary(poly2.mdl)
+coef(poly2.mdl)
+
+par(mfrow = c(2, 2), pty = "s") # 2x2 square plots
+plot(poly2.mdl)
+
+scatterplot(freq ~ doe, data=tue, 
+  	 xlab="Day of Epoch", ylab="Frequency", 
+   main="Demand Prediction")
+
+scatterplot.matrix(~freq+doe+dow+hr, data=hits.doe,
+  	 main="Demand Prediction")
+
+
+## Linear Model Day of Epoch (doe) and Day of Week (dow) vs Frequency
+# Subset data by dow
+sun = subset(hits.doe, dow == 'Sunday' & hr == 12)
+mon = subset(hits.doe, dow == 'Monday')
+tue = subset(hits.doe, dow == 'Tuesday')
+wed = subset(hits.doe, dow == 'Wednesday')
+thu = subset(hits.doe, dow == 'Thursday')
+fri = subset(hits.doe, dow == 'Friday')
+sat = subset(hits.doe, dow == 'Saturday')
+
+# Sunday
+freq = sun$freq
+doe = sun$doe
+
+# Linear Model
+linear.mdl = lm(freq ~ doe)
+summary(linear.mdl)
+coef(linear.mdl)
+
+par(mfrow = c(2, 2), pty = "s") # 2x2 square plots
+plot(linear.mdl)
+
+par(mfrow = c(1, 1), pty = "s") # 1x1 square plots
+plot(doe, freq)
+abline(linear.mdl)
+
+## Scatterplot with regression
+ggplot(sun, aes(x = doe, y = freq, group = 1)) +
+	geom_point(shape=1) +
+	xlab("Day of Epoch") +
+	theme(axis.text.x=element_text(size=8, angle=90, vjust=1)) +
+	geom_smooth(method=lm, formula = y ~ x, se = TRUE)
+
+
+#predict()
+
+# Polynomial Models
+poly2.mdl = lm(freq ~ poly(doe, 2))
+summary(poly2.mdl)
+coef(poly2.mdl)
+
+par(mfrow = c(2, 2), pty = "s") # 2x2 square plots
+plot(poly2.mdl)
+
 
 ##########################################################################
 ## EOF

@@ -17,7 +17,7 @@ import jinja2
 import datetime
 import json
 
-VERSION = "2013.09.23"
+VERSION = "2013.09.24"
 jinja_environment = jinja2.Environment(autoescape = True, # cgi escape set to autoescape
                                        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
 
@@ -111,9 +111,29 @@ prediction = [
 def predictFutureDemand(self, dt):
     # Model of future demand from input datetime
     prediction = 99         # prediction placeholder
+    
+    # Prediction Linear Model
+    #
+    #
+    #
+    #
+    predictionLinear = 99
+    # Prediction Polynomial Model
+    #
+    #
+    #
+    #
+    predictionPoly = 99
+    # Prediction Regression Tree Model
+    #
+    #
+    #
+    #
+    predictionTree = 99
+    
     return prediction  
       
-def genPredictionVars(self, futuredt):
+def generatePredictionVars(self, futuredt):
     # Convert input ISO format datetime "2012-05-01T00:00:00" to python datetime (dt) object
     import dateutil.parser
     dt = dateutil.parser.parse(futuredt)
