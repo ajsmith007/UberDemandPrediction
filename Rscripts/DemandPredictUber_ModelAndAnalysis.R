@@ -120,7 +120,7 @@ toc()
 # Subset data by dow
 sun = subset(hits.doe, dow == 'Sunday' & hr == 0)
 mon = subset(hits.doe, dow == 'Monday' & hr == 2 | hr == 8 | hr == 14 | hr == 20)
-tue = subset(hits.doe, dow == 'Tuesday' & hr == 0 | hr == 6 | hr == 12 | hr == 18)
+tue = subset(hits.doe, dow == 'Tuesday' & hr == 0)
 wed = subset(hits.doe, dow == 'Wednesday' & hr == 0 | hr == 6 | hr == 12 | hr == 18)
 thu = subset(hits.doe, dow == 'Thursday' & hr == 0 | hr == 6 | hr == 12 | hr == 18)
 fri = subset(hits.doe, dow == 'Friday' & hr == 0 | hr == 6 | hr == 12 | hr == 18)
@@ -129,16 +129,29 @@ sat = subset(hits.doe, dow == 'Saturday' & hr == 0 | hr == 6 | hr == 12 | hr == 
 Sun0000.mean <- mean(hits.doe$freq[which(hits.doe$dow == 'Sunday' & hits.doe$hr == 0)])
 mean(sun$freq)
 
-# Sunday
-sun = subset(hits.doe, dow == 'Sunday' & hr == 0)
-freq = sun$freq
-doe = sun$doe
+##########################################################################
+##########################################################################
+# Sub in any day
+sub = subset(hits.doe, dow == 'Wednesday' & hr == 14)
+freq = sub$freq
+doe = sub$doe
 
 # Linear Model
 linear.mdl = rlm(freq ~ doe)
 summary(linear.mdl)
 coef(linear.mdl)
 
+new.date = "2012-05-02T14:00:00"
+new.date = as.POSIXct(new.date, "%Y-%m-%dT%H:%M:%S", tz="UTC")
+weekdays(new.date)
+strftime(new.date, "%H")
+new <- data.frame(doe = as.integer(strptime(new.date, "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d")))
+predict.it = predict(linear.mdl, new)
+print(c(toString(new.date), as.numeric(predict.it)))
+
+
+##########################################################################
+##########################################################################
 par(mfrow = c(2, 2), pty = "s") # 2x2 square plots
 plot(linear.mdl)
 
@@ -196,15 +209,24 @@ ggplot.hod = ggplot(hod, aes(x = doe, y = freq, group = n_dow, color=n_dow)) +
 #ggsave("regression_2300_day_of_epoch_by_dow_black.png", width=11.11, height=7.2, dpi=100)
 ggplot.hod
 
+##########################################################################
+##Model Demand Prediction by Hour of Day and Day of Epoch
 
 days = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
 
+slope <- matrix(ncol = 24, nrow = length(days))
+intercept <- matrix(ncol = 24, nrow = length(days))
+
+colnames(slope) <- seq(0,23) 
+colnames(intercept) <-seq(0,23)
+
+rownames(slope) <- days 
+rownames(intercept) <- days
+
 d = 0
-intercept <- matrix(nrow = 24, ncol = length(days))
-slope <- matrix(nrow = 24, ncol = length(days))
 for (dd in days){
 	for (h in seq(0,23,1)){
-		# Get subset of data
+		# Get subset of data by doe and hr
 		sub = subset(hits.doe, dow == dd & hr == h)
 		freq = sub$freq
 		doe = sub$doe
@@ -212,14 +234,29 @@ for (dd in days){
 		# Linear Model
 		linear.mdl = rlm(freq ~ doe)
 		c = coef(linear.mdl)
-		intercept[h+1, d+1] = as.numeric(c[1])
-		slope[h+1, d+1] = as.numeric(c[2])
+		intercept[d+1, h+1] = as.numeric(c[1]) 	
+		slope[d+1, h+1] = as.numeric(c[2])		
+
 	}
 	d = d +1
 }
 
-write.matrix(intercept, file = "../analysis/intercept.csv", sep = ",")
-write.matrix(slope, file = "../analysis/slope.csv", sep = ",")
+write.table(intercept, file = "../static/data/intercept.csv", row.names = F, col.names = F, sep = ",")
+write.table(slope, file = "../static/data/slope.csv", row.names = F, col.names = F, sep = ",")
+
+sink("../static/data/slope.json")
+toJSON(dput(slope))
+sink()
+
+sink("../static/data/intercept.json")
+toJSON(dput(intercept))
+sink()
+
+##########################################################################
+## Answers for first two weeks May 
+
+may1 = "2012-05-01T00:00:00"
+as.integer(strptime(uber.data$local[i], "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d"))
 
 
 

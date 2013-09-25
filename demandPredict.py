@@ -16,6 +16,7 @@ import os
 import jinja2
 import datetime
 import json
+import csv
 
 VERSION = "2013.09.24"
 jinja_environment = jinja2.Environment(autoescape = True, # cgi escape set to autoescape
@@ -29,9 +30,22 @@ with open('static/data/uber_demand_prediction_challenge.json') as f:
     for line in f:
         data.append(json.loads(line))
 
-model = []
-#with open('static/data/uber_demand_prediction_challenge_model.json') as json_file:    
-#    model = json.load(json_file)
+# Modeled Intercepts [r][c] = [d][h]
+intercept = []
+intercept_file = 'static/data/intercept.csv'
+csvReader = csv.reader(open(intercept_file, 'rb'), delimiter=',', quotechar='|')
+for row in csvReader:
+    intercept.append(row)
+# access elements by index [dow][hr]: print intercept[6][10] = Saturday 1000
+ 
+# Modeled Intercepts [r][c] = [d][h]
+slope = []
+slope_file = 'static/data/slope.csv'
+csvReader = csv.reader(open(slope_file, 'rb'), delimiter=',', quotechar='|')
+for row in csvReader:
+    slope.append(row)
+# access elements by index: print slope[0][1] = Sunday 0100
+
 
 # Temporary Data
 prediction = [
@@ -118,12 +132,7 @@ def predictFutureDemand(self, dt):
     #
     #
     predictionLinear = 99
-    # Prediction Polynomial Model
-    #
-    #
-    #
-    #
-    predictionPoly = 99
+
     # Prediction Regression Tree Model
     #
     #
