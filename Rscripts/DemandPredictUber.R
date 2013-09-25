@@ -196,7 +196,9 @@ hits.mnthday = count(uber.data, vars = c("mnthday", "n_dow"))
 plot.mnthday = ggplot(data = hits.mnthday ) + 
 	geom_bar(aes(x = mnthday, y = freq), stat="identity", position = "dodge") +
 	xlab("MM-DD") +
+	theme_black() +
 	theme(axis.text.x=element_text(size=8, angle=90, vjust=1))
+	
 print(plot.mnthday)
 Pause()
 
@@ -328,16 +330,18 @@ par(mfrow = c(2, 2), pty = "s") # 2x2 square plots
 plot(poly2.mdl)
 
 scatterplot(freq ~ doe, data=tue, 
-  	 xlab="Day of Epoch", ylab="Frequency", 
-   main="Demand Prediction")
+  	xlab="Day of Epoch", ylab="Frequency", 
+   	main="Demand Prediction")
 
-scatterplot.matrix(~freq+doe+dow+hr, data=hits.doe,
-  	 main="Demand Prediction")
+scatterplotMatrix(~freq+doe+hr | n_dow, data=hits.doe,
+	by.group=TRUE,
+  	main="Demand Prediction") +
+	scale_color_brewer(palette="Blues")
 
 
 ## Linear Model Day of Epoch (doe) and Day of Week (dow) vs Frequency
 # Subset data by dow
-sun = subset(hits.doe, dow == 'Sunday' & hr == 12)
+sun = subset(hits.doe, dow == 'Sunday')
 mon = subset(hits.doe, dow == 'Monday')
 tue = subset(hits.doe, dow == 'Tuesday')
 wed = subset(hits.doe, dow == 'Wednesday')

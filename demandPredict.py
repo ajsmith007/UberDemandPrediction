@@ -255,7 +255,7 @@ def getData():
 
 @app.route('/api/v1/model', methods = ['GET'])
 def getModel():
-    return model
+    return jsonify(slope=slope, intercept=intercept)
 
 @app.route('/api/v1/prediction', methods = ['GET'])
 def getPrediction():

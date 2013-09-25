@@ -23,7 +23,33 @@
       <div class="row featurette">
         <div class="col-md-8">
       		<h3>Methodology</h3>
+      	
+      		<p>My approach to this task was to create a simple model of the number of times the <a href="https://play.google.com/store/apps/details?id=com.ubercab&hl=en">Uber Mobile App </a>was accessed (a proxy for the expected number of ride requests) in a given hour and predict the demand for May 1, 2012 through May 15th, 2012 and beyond. I started with some basic temporal analysis of the data.</p> 
+      		<p>The first step was to convert the UTC timestamps in the json file to the local Washington D.C. time in the Eastern Time Zone. people rarely have an alarm clock that reads UTC especially in the US.</p>
+      		<p>Given that the data set provided contained a small number of samples (60 days) over a short specific two months (March 2012 and April 2012), I began to investigate the overall trends and peroidicity of the data.</p> 
+     
+      		<p class="bold-blue">Chart 1: Number of App Opens (freq) per Day (MM-DD)</p>
+			<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/plot_day_mm-dd_black.png') }}" /></a>
+			<p>Give more detail...</p>
+      		<br><br>
+      		<p class="bold-blue">Chart 2: Number of App Opens (freq) per Hour (hr) Color Coded by Day of the Week (dow)</p>
+      		<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/plot_hours_dow_n_black.png') }}" /></a>
+      		<p>Give more detail...</p>
+      		<br><br>
+      		<p class="bold-blue">Chart 3: Ordinary Least Squares (OLS) Linear Regression by Day of Epoch (since 1970-01-01T00:00:00) Color Coded by Day of the Week (dow)</p>
+      		<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/regression_day_of_epoch_by_dow_black.png') }}" /></a>
+      		<p>Give more detail...</p>
+      		<br><br>
+      		<p class="bold-blue">Animation: Number of App Opens by Day of the Week Animated by the Hour</p>
+      		<video width="1280" height="720" controls loop>
+  				<source src="{{ url_for('static', filename='img/regression_animation.mp4') }}" type="video/mp4">
+			</video>
+      		<p>Give more detail...</p>
       	</div>
+      </div>
+      
+      <div class="col-md-8">
+		<br><br>
       </div>
       
       <!-- FOOTER -->
