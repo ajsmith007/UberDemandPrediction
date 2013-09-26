@@ -216,7 +216,7 @@ def getPrediction():
         return make_response(jsonify( { 'error': 'Bad request' } ), 400) # malformed GET request
     
     prediction = predictFutureDemand(queryStr)
-    return jsonify( {'datetime': queryStr }, { 'prediction': prediction } )
+    return jsonify( {"UberDemandPrediction": [{'datetime': queryStr }, { 'prediction': prediction }] })
     
 # @app.route('/api/v1/prediction/<datetime>', methods = ['GET'])
 # def getPredictionDateTime():
