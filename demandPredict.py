@@ -7,12 +7,18 @@ demandPredict.py
 Coding Challenge for Uber
 Demand Prediction: Washington D.C. 
 
-Created on Sep 20, 2013
-Completed on Sep 24, 2013
-@author: ajsmith007@gmail.com
+__author__ = "Drew Smith" 
+__email__ = "ajsmith007@gmail.com"
+__version__ = "1.0.0"
+__status__ = "Demonstration"
+__copyright__ = Copyright 2013, Drew Smith"
+
+Assigned on: Sept 18, 2013
+Created on: Sep 20, 2013
+Completed on: Sep 25, 2013
+
 ########################################################################################
 '''
-
 from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
 import os
 import jinja2
@@ -22,7 +28,7 @@ import csv
 import dateutil.parser
 
 ########################################################################################
-VERSION = "2013.09.24"
+VERSION = "2013.09.25"
 jinja_environment = jinja2.Environment(autoescape = True, # cgi escape set to autoescape
                                        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
 
@@ -61,20 +67,22 @@ def predictFutureDemand(inputStr):
     datetime_utc = dateutil.parser.parse(inputStr)
     if verbose == True: print datetime_utc
     # Compute which Day of Epoch (doe)
-    doe = datetime_utc - datetime.datetime.utcfromtimestamp(0)
+    doeObj = datetime_utc - datetime.datetime.utcfromtimestamp(0)
+    doe = int(doeObj.days)
     if verbose == True: print doe
     # Convert input UTC time to local date time 
     local_dt = datetime_utc
+    if verbose == True: print local_dt
     # Extract which Day of the Week as numeric (1=Mon, .., 7=Sun etc)
     wkday = local_dt.weekday()
     if (wkday == 7):            # coeff table has 0=Sun, 1=Mon, ..., etc
         dow = 0
     else:
-        dow = wkday
+        dow = int(wkday)
     #dow = 0    # debugging
     if verbose == True: print dow
     # Extract which Hour of the Day (0-23)
-    hr = local_dt.strftime("%H")
+    hr = int(local_dt.strftime("%H"))
     #hr = 3     # debugging
     if verbose == True: print hr
     # Look up Linear Model Coefficents
@@ -83,8 +91,8 @@ def predictFutureDemand(inputStr):
     m = slope[dow][hr]
     if verbose == True: print m
     # Compute Demand Prediction from the RLM for the given UTC date and time in pp.pp 
-    #prediction = m*doe + b
-    prediction = -99.99     # placeholder for debug
+    prediction = float(m)*float(doe) + float(b)
+    #prediction = -99.99     # placeholder for debug
     if verbose == True: print prediction
     return prediction  
       
