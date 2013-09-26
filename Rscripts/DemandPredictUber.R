@@ -61,13 +61,18 @@ source('local_functions.R') 	# local functions
 ##########################################################################
 ## Check to see if UberData.csv exists and not altered --> load csv to save time
 ##########################################################################
-csvFile = "../analysis/UberData.csv"
-csvAltered = TRUE		# FIXME - Bad csv export everytime after row 17265!
-if (file.exists(csvFile) && (csvAltered == FALSE)){
-	cat("Reading data from CSV file...\n")
-	uber.data = read.csv("../analysis/UberDataNA.csv")
+#csvFile = "../analysis/UberData.csv"
+rdataFile = "DemandPredictUber.RData"
+Altered = FALSE
+#if (file.exists(csvFile) && (Altered == FALSE)){
+#	cat("Reading data from CSV file...\n")
+#	uber.data = read.csv("../analysis/UberDataNA.csv")
+#} 
+if (file.exists(rdataFile) && (Altered == FALSE)) {
+	cat("Reading data from .Rdata file...\n")
+	load(rdataFile)
 
-} else { 			# Read json file from Uber and derive analysis vars 
+} else { # Read json file from Uber and derive analysis vars 
 
 	##########################################################################
 	## Read UBER json file
@@ -94,7 +99,7 @@ if (file.exists(csvFile) && (csvAltered == FALSE)){
 
 	## Append data.frame with info for Basic Histogram and Regression Analysis 
 	# [FIXME - might be faster as matrix instead of ~8-12mins for data.frame with ~90sec per variable computation]
-	cat("Computing Day of the Week (dow) and Hourly Data...[~10min]\n")
+	cat("Computing Day of the Week (dow) and Hourly Data...[very long process ~30min machine dependent]\n")
 	tic()
 	for (i in 1:length(uber.data$json)) {
 		uber.data$doe[i] = as.integer(strptime(uber.data$local[i], "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d"))# Day of Epoch (~106.52 sec)
@@ -146,7 +151,8 @@ if (file.exists(csvFile) && (csvAltered == FALSE)){
 
 } ## END file.exists
 
-## Call browser to pause script here - hit 'Q' to continue with regular prompt 
+## Call browser() to pause script here
+cat("Paused: Hit 'Q' to continue with regular prompt...") 
 browser()
 
 ##########################################################################
