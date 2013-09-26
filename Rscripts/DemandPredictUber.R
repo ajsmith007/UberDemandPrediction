@@ -67,83 +67,82 @@ if (file.exists(csvFile) && (csvAltered == FALSE)){
 	cat("Reading data from CSV file...\n")
 	uber.data = read.csv("../analysis/UberDataNA.csv")
 
-} else { 				# Read json file from Uber and derive analysis vars 
+} else { 			# Read json file from Uber and derive analysis vars 
 
-##########################################################################
-## Read UBER json file
-##########################################################################
-cat("Reading JSON data...\n")
-file <- '../static/data/uber_demand_prediction_challenge.json'
-data.json <- fromJSON(file=file, method='C')
+	##########################################################################
+	## Read UBER json file
+	##########################################################################
+	cat("Reading JSON data...\n")
+	file <- '../static/data/uber_demand_prediction_challenge.json'
+	data.json <- fromJSON(file=file, method='C')
 
-##########################################################################
-## Create new UBER data.frame for event times and append modified date/time vars
-##########################################################################
-cat("Initializing data frame...\n")
-## Initialize data frame with JSON data
-uber.data <- data.frame(json=data.json)
+	##########################################################################
+	## Create new UBER data.frame for event times and append modified date/time vars
+	##########################################################################
+	cat("Initializing data frame...\n")
+	## Initialize data frame with JSON data
+	uber.data <- data.frame(json=data.json)
 
-## Convert JSON UTC times to ISO8601 and local Washington DC time
-cat("Formatting UTC and computing localtime...\n")
-tic()
-for (i in 1:length(uber.data$json)) {
-	uber.data$iso_utc[i] = gsub("(.*).(..)$","\\1\\2",uber.data$json[i])
-	uber.data$local[i] = format(as.POSIXct(strptime(uber.data$iso_utc[i], "%Y-%m-%dT%H:%M:%S%z", tz="UTC")), tz="America/New_York", usetz=TRUE)
-}
-toc()
-
-## Append data.frame with info for Basic Histogram and Regression Analysis 
-# [FIXME - might be faster as matrix instead of ~8-12mins for data.frame with ~90sec per variable computation]
-cat("Computing Day of the Week (dow) and Hourly Data...\n")
-tic()
-for (i in 1:length(uber.data$json)) {
-for (i in 17265:17265){
-	uber.data$doe[i] = as.integer(strptime(uber.data$local[i], "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d"))# Day of Epoch (~106.52 sec)
-	uber.data$doy[i] = strptime(uber.data$local[i], "%Y-%m-%d %H:%M:%S")$yday+1	# Day of Year (~89.62 sec)
-	# Days since Official Launch in this Market (Which? Uber: ~2011; UberX: ~2012)
-	uber.data$mnthday[i] = strftime(uber.data$local[i], "%m-%d")	# Month and Day (~100.1 sec with warnings --> NA errors) 
-	uber.data$mdh[i] = strftime(uber.data$local[i], "%m-%d %H00")	# Month, Day and Hour (~98.7 sec with warnings --> NA errors)
-	uber.data$dow[i] = weekdays(as.POSIXlt(uber.data$local[i])) 	# Day of Week (dow) (~86.02 sec)
-	uber.data$hr[i] = strftime(uber.data$local[i], "%H")			# Hour (~90.22 sec)
-	# Top of the hour
-	# Botom of the hour
-	uber.data$min[i] = strftime(uber.data$local[i], "%M")			# Minute (~89.44 sec)
-}
-toc()
-
-## Add numeric to start of Day of Week for better display (n_dow = "n-dow") 
-# [FIXME - compute in previous loop using wday() in local_functions.R]
-cat("Adding numeric prefix to dow...\n")
-tic()
-for (d in 1:length(uber.data$json)){
-	if(uber.data$dow[d] == "Sunday"){ 
-		uber.data$n_dow[d] = "0-Sunday" 
-	} else if(uber.data$dow[d] == "Monday"){
-		uber.data$n_dow[d] = "1-Monday" 
-	} else if(uber.data$dow[d] == "Tuesday"){ 
-		uber.data$n_dow[d] = "2-Tuesday" 
-	} else if(uber.data$dow[d] == "Wednesday"){ 
-		uber.data$n_dow[d] = "3-Wednesday" 
-	} else if(uber.data$dow[d] == "Thursday"){ 
-		uber.data$n_dow[d] = "4-Thursday" 
-	} else if(uber.data$dow[d] == "Friday"){ 
-		uber.data$n_dow[d] = "5-Friday" 
-	} else if (uber.data$dow[d] == "Saturday"){ 
-		uber.data$n_dow[d] = "6-Saturday" 
-	}
-}
-toc()
-
-## Flag to resave uber.data as csv file if data.frame altered or appended in analysis
-# csvAltered = TRUE
-
-if (csvAltered == TRUE){
-	# Save data.frame to csv for faster analysis next time
-	cat("Saving data.frame to csv...\n")
+	## Convert JSON UTC times to ISO8601 and local Washington DC time
+	cat("Formatting UTC and computing localtime... [~3min]\n")
 	tic()
-	write.table(uber.data,file="../analysis/UberDataNA.csv",sep=",",row.names=F)
+	for (i in 1:length(uber.data$json)) {
+		uber.data$iso_utc[i] = gsub("(.*).(..)$","\\1\\2",uber.data$json[i])
+		uber.data$local[i] = format(as.POSIXct(strptime(uber.data$iso_utc[i], "%Y-%m-%dT%H:%M:%S%z", tz="UTC")), tz="America/New_York", usetz=TRUE)
+	}
 	toc()
-}
+
+	## Append data.frame with info for Basic Histogram and Regression Analysis 
+	# [FIXME - might be faster as matrix instead of ~8-12mins for data.frame with ~90sec per variable computation]
+	cat("Computing Day of the Week (dow) and Hourly Data...[~10min]\n")
+	tic()
+	for (i in 1:length(uber.data$json)) {
+		uber.data$doe[i] = as.integer(strptime(uber.data$local[i], "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d"))# Day of Epoch (~106.52 sec)
+		uber.data$doy[i] = strptime(uber.data$local[i], "%Y-%m-%d %H:%M:%S")$yday+1	# Day of Year (~89.62 sec)
+		# Days since Official Launch in this Market (Which? Uber: ~2011; UberX: ~2012)
+		uber.data$mnthday[i] = strftime(uber.data$local[i], "%m-%d")	# Month and Day (~100.1 sec with warnings --> NA errors) 
+		uber.data$mdh[i] = strftime(uber.data$local[i], "%m-%d %H00")	# Month, Day and Hour (~98.7 sec with warnings --> NA errors)
+		uber.data$dow[i] = weekdays(as.POSIXlt(uber.data$local[i])) 	# Day of Week (dow) (~86.02 sec)
+		uber.data$hr[i] = strftime(uber.data$local[i], "%H")			# Hour (~90.22 sec)
+		# Top of the hour
+		# Botom of the hour
+		uber.data$min[i] = strftime(uber.data$local[i], "%M")			# Minute (~89.44 sec)
+	}
+	toc()
+
+	## Add numeric to start of Day of Week for better display (n_dow = "n-dow") 
+	# [FIXME - compute in previous loop using wday() in local_functions.R]
+	cat("Adding numeric prefix to dow...\n")
+	tic()
+	for (d in 1:length(uber.data$json)){
+		if(uber.data$dow[d] == "Sunday"){ 
+			uber.data$n_dow[d] = "0-Sunday" 
+		} else if(uber.data$dow[d] == "Monday"){
+			uber.data$n_dow[d] = "1-Monday" 
+		} else if(uber.data$dow[d] == "Tuesday"){ 
+			uber.data$n_dow[d] = "2-Tuesday" 
+		} else if(uber.data$dow[d] == "Wednesday"){ 
+			uber.data$n_dow[d] = "3-Wednesday" 
+		} else if(uber.data$dow[d] == "Thursday"){ 
+			uber.data$n_dow[d] = "4-Thursday" 
+		} else if(uber.data$dow[d] == "Friday"){ 
+			uber.data$n_dow[d] = "5-Friday" 
+		} else if (uber.data$dow[d] == "Saturday"){ 
+			uber.data$n_dow[d] = "6-Saturday" 
+		}
+	}
+	toc()
+
+	## Flag to resave uber.data as csv file if data.frame altered or appended in analysis
+	# csvAltered = TRUE
+
+	if (csvAltered == TRUE){
+		# Save data.frame to csv for faster analysis next time
+		cat("Saving data.frame to csv...\n")
+		tic()
+		write.table(uber.data,file="../analysis/UberDataNA.csv",sep=",",row.names=F)
+		toc()
+	}
 
 } ## END file.exists
 
@@ -382,8 +381,3 @@ coef(poly2.mdl)
 
 par(mfrow = c(2, 2), pty = "s") # 2x2 square plots
 plot(poly2.mdl)
-
-
-##########################################################################
-## EOF
-##########################################################################
