@@ -117,7 +117,7 @@ for (h in 1:length(hits.doe$hr)){
 toc()
 
 ##########################################################################
-# Subset data by dow
+# Subset data by dow and certain hours
 sun = subset(hits.doe, dow == 'Sunday' & hr == 0)
 mon = subset(hits.doe, dow == 'Monday' & hr == 2 | hr == 8 | hr == 14 | hr == 20)
 tue = subset(hits.doe, dow == 'Tuesday' & hr == 0)
@@ -140,14 +140,6 @@ doe = sub$doe
 linear.mdl = rlm(freq ~ doe)
 summary(linear.mdl)
 coef(linear.mdl)
-
-new.date = "2012-05-02T14:00:00"
-new.date = as.POSIXct(new.date, "%Y-%m-%dT%H:%M:%S", tz="UTC")
-weekdays(new.date)
-strftime(new.date, "%H")
-new <- data.frame(doe = as.integer(strptime(new.date, "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d")))
-predict.it = predict(linear.mdl, new)
-print(c(toString(new.date), as.numeric(predict.it)))
 
 
 ##########################################################################
@@ -252,11 +244,56 @@ sink("../static/data/intercept.json")
 toJSON(dput(intercept))
 sink()
 
+
 ##########################################################################
-## Answers for first two weeks May 
+##########################################################################
+# Make predictions for May 1 2012 00:00:00 UTC through May 15 2012 23:00:00 UTC
+#Copy hits.doe
+hits.doed = hits.doe
+hits.doed$hrs = as.numeric(hits.doed$hr) # make hr numeric
+# Corrrect Time from UTC to Eastern Time Zone
+startDate$json = "2012-05-01T00:00:00+00:00"
+startDate$iso_utc = gsub("(.*).(..)$","\\1\\2",startDate$json)
+startDate$utc = as.POSIXct(startDate$iso_utc, "%Y-%m-%dT%H:%M:%S", tz="UTC")
+#startDate$local = format(as.POSIXct(strptime(startDate$iso_utc, "%Y-%m-%dT%H:%M:%S%z", tz="UTC")), tz="America/New_York", usetz=TRUE)
+startDate$local = format(startDate$utc, tz="America/New_York", usetz=TRUE)
 
-may1 = "2012-05-01T00:00:00"
-as.integer(strptime(uber.data$local[i], "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d"))
+# Cycle through evry hour for the first two weeks in May 2012
+for (dd in seq(0,14,1)) {
+	for (hh in seq(0,23,1)){ 
+		# Add multiple of hours (3600sec) to  
+		newDate$local = as.POSIXct(as.POSIXlt(startDate$local, tz="America/New_York", usetz=TRUE) + (dd * 86400) + (hh * 3600))
+		newDate$doe = as.integer(strptime(newDate$local, "%Y-%m-%d") - strptime("1970-01-01", "%Y-%m-%d"))# Day of Epoch
+		# Extract weekday and hour from datetime
+		w = weekdays(newDate$local)
+		h = as.POSIXlt(newDate$local)$hour
+		
+		sub = subset(hits.doed, dow == w & hrs == h)
+		freq = sub$freq
+		doe = sub$doe
+		linear.mdl = lm(freq ~ doe) # Linear Model
 
+		c = coef(linear.mdl)
+		intercept = as.numeric(c[1]) 	
+		slope = as.numeric(c[2])			
+		predict.it = newDate$doe*slope + intercept
+
+		newDate$utc = format(newDate$local, tz='UTC', usetz=TRUE)
+		newDate$iso_utc =  format(as.POSIXct(newDate$utc), '%Y-%m-%dT%H:%M:%S')
+		
+		if (dd == 0 & hh == 0){
+			prediction <- data.frame(datetime_utc=toString(newDate$iso_utc), prediction=as.numeric(predict.it))		
+		} else {
+			prediction <- rbind(prediction, data.frame(datetime_utc=toString(newDate$iso_utc), prediction=as.numeric(predict.it)))		
+		}
+	}
+}
+
+# Write answers for first two weeks May 2012 to CSV 
+write.table(prediction, file="../static/data/DemandPredictionMay2012.csv", sep = ", ", row.names=FALSE, col.names=TRUE)
+
+#,append=FALSE, 
+
+##########################################################################
 
 
