@@ -15,7 +15,7 @@ __copyright__ = Copyright 2013, Drew Smith"
 
 Assigned on: Sept 18, 2013
 Created on: Sep 20, 2013
-Completed on: Sep 26, 2013
+Completed on: Sep 25, 2013
 
 ########################################################################################
 '''
@@ -28,7 +28,7 @@ import csv
 import dateutil.parser
 
 ########################################################################################
-VERSION = "2013.09.26"
+VERSION = "2013.09.25"
 jinja_environment = jinja2.Environment(autoescape = True, # cgi escape set to autoescape
                                        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
 
