@@ -8,6 +8,10 @@
 # C extensions
 *.so
 
+# R extensions
+.RData
+.Rhistory
+
 # Packages
 *.egg
 *.egg-info

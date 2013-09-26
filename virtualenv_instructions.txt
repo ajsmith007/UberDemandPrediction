@@ -13,6 +13,25 @@ virtualenv venv
 # Start virtualenv (Windows)
 venv\scripts\activate
 
+# Install required python packages
+# (see section below)
+
+# Start the python script
+python demandPredict.py
+
+# Open a Browser to view the Application 
+# http://http://localhost:5000/
+
+# API GET prediction 
+curl -i -X GET "http://localhost:5000/api/v1/prediction?q=2012-05-01T00:00:00"
+
+# Leave the virtualenv session
+deactivate
+
+# cntrl-Z and cntrl-c are useful if flask continues reloading (Windows)
+
+########
+# Required Python Packages for Virtual Environment 
 ########
 #PIP Install Python Packages (Linux) - pip install (if activated)
 sudo venv/bin/pip install flask==10.1
@@ -27,6 +46,8 @@ sudo venv/bin/pip install flask-wtf==0.8.4
 sudo venv/bin/pip install pytz==2013b
 sudo venv/bin/pip install flask-babel==0.8
 sudo venv/bin/pip install flup
+sudo venv/bin/pip install yolk
+sudo venv/bin/pip install python-dateutil
 
 ########
 # PIP Install Python Packages (Windows)
@@ -43,10 +64,14 @@ pip install flask-wtf==0.8.4
 pip install pytz==2013b
 pip install flask-babel==0.8
 pip install flup
+pip install yolk
+pip install python-dateutil
 
 # Windows Only
 pip install --no-deps lamson chardet flask-mail
 
+########
+# Other Python Packages (not used)
 ########
 # Math/Stat Package Dependancies (system specific) (Linux)
 sudo apt-get build-dep matplotlib
@@ -62,6 +87,5 @@ sudo venv/bin/pip install -U scikit-learn
 sudo venv/bin/pip install -U matplotlib
 
 ########
-# leave the virtualenv session
-deactivate
-
+# EOF
+########

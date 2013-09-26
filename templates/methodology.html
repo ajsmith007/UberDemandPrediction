@@ -22,11 +22,11 @@
       <hr class="featurette-divider">
       <div class="row featurette">
         <div class="col-md-8">
-      		<h3>Methodology</h3>
+      		<h3 class="bold-blue">Methodology</h3>
       	
       		<p>My approach to this task was to create a simple model of the number of times the <a href="https://play.google.com/store/apps/details?id=com.ubercab&hl=en">Uber Mobile App </a>was accessed (a proxy for the expected number of ride requests) in a given hour and predict the demand for May 1, 2012 through May 15th, 2012 and beyond. I started with some basic temporal analysis of the data.</p> 
-      		<p>The first step was to convert the UTC timestamps in the json file to the local Washington D.C. time in the Eastern Time Zone. people rarely have an alarm clock that reads UTC especially in the US.</p>
-      		<p>Given that the data set provided contained a small number of samples (60 days) over a short specific two months (March 2012 and April 2012), I began to investigate the overall trends and peroidicity of the data.</p> 
+      		<p>The first step was to convert the UTC timestamps in the json file to the local Washington D.C. time in the Eastern Time Zone. People rarely have an alarm clock that displays time in UTC (especially in the US) and weekly/daily/hourly patterns should emerge from the local time corrected data (including the switch from EST to EDT).</p>
+      		<p>Given that the data set provided contained a small number of samples (60 days) over a short specific two months (March 2012 and April 2012), Long term trends would be hard to model accuratly. So I began to investigate the overall trends and peroidicity of the data.</p> 
      
       		<p class="bold-blue">Chart 1: Number of App Opens (freq) per Day (MM-DD)</p>
 			<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/plot_day_mm-dd_black.png') }}" /></a>
@@ -46,6 +46,10 @@
 			</video>
       		<p>Give more detail...</p>
       	</div>
+      </div>
+      
+      <div class="col-md-8">
+      	<p>What do the <a href="results.html">results</a> tell us about these patterns?</h4>
       </div>
       
       <div class="col-md-8">
