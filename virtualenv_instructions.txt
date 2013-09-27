@@ -1,5 +1,11 @@
-# Create a new PyDev project in Eclipse
+# Clone this repo git clone 
+git clone https://github.com/ajsmith007/UberDemandPrediction
+
+# or reate a new PyDev project in Eclipse
 # or mkdir for Flask project
+
+# cd into the project directory
+cd UberDemandPrediction
 
 # install virtualenv 
 pip install --upgrade virtualenv
@@ -11,7 +17,7 @@ virtualenv venv
 . venv/bin/activate
 
 # Start virtualenv (Windows)
-venv\scripts\activate
+#venv\scripts\activate
 
 # Install required python packages
 # (see section below)
@@ -20,7 +26,8 @@ venv\scripts\activate
 python demandPredict.py
 
 # Open a Browser to view the Application 
-# http://http://localhost:5000/
+# http://localhost:5000/
+#or http://127.0.0.1:5000/
 
 # API GET prediction 
 curl -i -X GET "http://localhost:5000/api/v1/prediction?q=2012-05-01T00:00:00"
@@ -31,7 +38,7 @@ deactivate
 # cntrl-Z and cntrl-c are useful if flask continues reloading (Windows)
 
 ########
-# Required Python Packages for Virtual Environment 
+# Required Python Packages with version numbers for Virtual Environment 
 ########
 #PIP Install Python Packages (Linux) - pip install (if activated)
 sudo venv/bin/pip install flask==10.1
