@@ -3,8 +3,6 @@ UberDemandPrediction
 
 Uber Demand Prediction Challenge
 
-All content on this site is provided for informational purposes only. No animals were harmed in the making of the API (at least not any cute ones anyway).
-
 I hope you have found this API useful and up to the standards Uber expects from a Rock Star Data Scientist.
 
 This has been a very interesting project. The data set seemed innocuous at first but once I dug in a little more and applied some basic analysis techniques several temporal patterns we're revealed. It became immediately apparent that there was more than meets the eye.
