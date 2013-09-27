@@ -1,5 +1,4 @@
 #!flask/bin/python
-
 '''
 ########################################################################################
 demandPredict.py
@@ -58,33 +57,38 @@ for row in csvReader:
 # access elements by index: print slope[0][1] = Sunday 0100 localtime
 
 ########################################################################################
+# Empty Class to hold prediction variables
+class Prediction:
+    pass
+
+########################################################################################
 # Prep Data and Demand Prediction Model
 def predictFutureDemand(inputStr):
     # Model of future demand from input utc datetime
+    prediction = Prediction()
     # Convert input ISO format datetime "2012-05-01T00:00:00" to python datetime object
-    datetime_utc = dateutil.parser.parse(inputStr)
+    prediction.datetime_utc = dateutil.parser.parse(inputStr)
     # Compute which Day of Epoch (doe)
-    doeObj = datetime_utc - datetime.datetime.utcfromtimestamp(0)
-    doe = int(doeObj.days)
+    doeObj = prediction.datetime_utc - datetime.datetime.utcfromtimestamp(0)
+    prediction.doe = int(doeObj.days)
     # Convert input UTC time to local date time
     WASHDC = dateutil.tz.gettz('America/New_York')
     UTC = dateutil.tz.gettz('UTC') 
-    utc_dt = datetime_utc.replace(tzinfo=UTC)
-    local_dt = utc_dt.astimezone(WASHDC)
+    prediction.utc_dt = prediction.datetime_utc.replace(tzinfo=UTC)
+    prediction.local_dt = prediction.utc_dt.astimezone(WASHDC)
     # Extract which Day of the Week as numeric (1=Mon, .., 7=Sun etc)
-    wkday = local_dt.weekday()
+    wkday = prediction.local_dt.weekday()
     if (wkday == 7):            # coeff table has 0=Sun, 1=Mon, ..., etc
-        dow = 0
+        prediction.dow = 0
     else:
-        dow = int(wkday)
+        prediction.dow = int(wkday)
     # Extract which Hour of the Day (0-23)
-    hr = int(local_dt.strftime("%H"))
+    prediction.hr = int(prediction.local_dt.strftime("%H"))
     # Look up Linear Model Coefficents
-    b = intercept[dow][hr]
-    m = slope[dow][hr]
+    prediction.b = intercept[prediction.dow][prediction.hr]
+    prediction.m = slope[prediction.dow][prediction.hr]
     # Compute Demand Prediction from the RLM for the given UTC date and time in pp.pp 
-    prediction = float(m)*float(doe) + float(b)
-
+    prediction.demand = float(prediction.m)*float(prediction.doe) + float(prediction.b)
     return prediction  
 
 ########################################################################################
@@ -177,8 +181,18 @@ def getPrediction():
     if len(queryStr) != 19:
         return make_response(jsonify( { 'error': 'Bad request' } ), 400) # malformed GET request
     
-    prediction = predictFutureDemand(queryStr)
-    return jsonify( {"UberDemandPrediction": [{'datetime': queryStr, 'prediction': prediction }] })
+    demand = predictFutureDemand(queryStr)
+    demandPrediction = demand.demand
+    return jsonify( {"UberDemandPrediction": [{'datetime': queryStr,
+                                               'datetime_utc': demand.datetime_utc,
+                                               'doe': demand.doe,
+                                               'utc_dt': demand.utc_dt,
+                                               'local_dt':demand.local_dt,
+                                               'dow':demand.dow,
+                                               'hr':demand.hr,
+                                               'b': demand.b,
+                                               'm':demand.m,
+                                               'demand': demandPrediction}] })
 
 # favicon
 @app.route('/favicon.ico')
