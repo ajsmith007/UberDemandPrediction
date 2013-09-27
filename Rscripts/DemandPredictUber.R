@@ -145,7 +145,7 @@ if (file.exists(rdataFile) && (Altered == FALSE)) {
 		# Save data.frame to csv for faster analysis next time
 		cat("Saving data.frame to csv...\n")
 		tic()
-		write.table(uber.data,file="../analysis/UberDataNA.csv",sep=",",row.names=F)
+		write.table(uber.data,file="../analysis/UberData.csv",sep=",",row.names=F)
 		toc()
 	}
 
@@ -154,6 +154,7 @@ if (file.exists(rdataFile) && (Altered == FALSE)) {
 ## Call browser() to pause script here
 cat("Paused: Hit 'Q' to continue with regular prompt...") 
 browser()
+
 
 ##########################################################################
 # Basic Histogram Analysis

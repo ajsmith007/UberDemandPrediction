@@ -80,6 +80,8 @@ pip install --no-deps lamson chardet flask-mail
 ########
 # Other Python Packages (not used)
 ########
+# Video player and codecs
+sudo apt-get install vlc
 # Math/Stat Package Dependancies (system specific) (Linux)
 sudo apt-get build-dep matplotlib
 sudo apt-get install freetype*

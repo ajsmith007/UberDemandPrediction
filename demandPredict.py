@@ -57,7 +57,7 @@ for row in csvReader:
 # access elements by index: print slope[0][1] = Sunday 0100 localtime
 
 ########################################################################################
-# Empty Class to hold prediction variables
+# Empty class to hold prediction variables
 class Prediction:
     pass
 
@@ -77,11 +77,11 @@ def predictFutureDemand(inputStr):
     prediction.utc_dt = prediction.datetime_utc.replace(tzinfo=UTC)
     prediction.local_dt = prediction.utc_dt.astimezone(WASHDC)
     # Extract which Day of the Week as numeric (1=Mon, .., 7=Sun etc)
-    wkday = prediction.local_dt.weekday()
-    if (wkday == 7):            # coeff table has 0=Sun, 1=Mon, ..., etc
+    prediction.wkday = prediction.local_dt.weekday()
+    if (prediction.wkday == 7):            # coeff table has 0=Sun, 1=Mon, ..., etc
         prediction.dow = 0
     else:
-        prediction.dow = int(wkday)
+        prediction.dow = int(prediction.wkday+1)
     # Extract which Hour of the Day (0-23)
     prediction.hr = int(prediction.local_dt.strftime("%H"))
     # Look up Linear Model Coefficents
@@ -188,11 +188,12 @@ def getPrediction():
                                                'doe': demand.doe,
                                                'utc_dt': demand.utc_dt,
                                                'local_dt':demand.local_dt,
+                                               'wkday':demand.wkday,
                                                'dow':demand.dow,
                                                'hr':demand.hr,
                                                'b': demand.b,
                                                'm':demand.m,
-                                               'demand': demandPrediction}] })
+                                               'prediction': demandPrediction}] })
 
 # favicon
 @app.route('/favicon.ico')
