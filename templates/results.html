@@ -23,10 +23,11 @@
       <div class="row featurette">
       <p class="col-md-5">Thursday, September 26, 2013</p>
         <div class="col-md-10">
+			<a id="Results"></a>
       		<h3 class="bold-blue">Results</h3>
 
       		<p>The predicted results of this simple linear regression model by Day of Epoch, Hour of Day and Day of the Week does pretty well. The predictions for May 1 through May 15, 2012 clearly follow the same diurnal and weekly patterns seen in the original data set: plenty of late Saturday nights rolling over to Sunday mornings, higher demand on weekends and little to no activity in the middle of the night. Keep in mind this data is in UTC so there is a little shift in the actual local time - those 6am UTC hits are actually more like 3am EDT. The overall character, trends and patterns are similar to the training data.</p>
-			<a href="#" rel="results1" title="Results"><img src="{{ url_for('static', filename='img/plot_predictMay2012_black.png') }}" /></a>
+			<a href="#Results" rel="results1" title="Results"><img src="{{ url_for('static', filename='img/plot_predictMay2012_black.png') }}" /></a>
 			<br><br>
 		</div>
       	<div class="col-md-10">
