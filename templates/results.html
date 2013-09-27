@@ -21,20 +21,29 @@
       
       <hr class="featurette-divider">
       <div class="row featurette">
-      <p class="col-md-offset-1">Wednesday, September 25, 2013</p>
-        <div class="col-md-10 col-md-offset-1">
+      <p class="col-md-5">Wednesday, September 25, 2013</p>
+        <div class="col-md-10">
       		<h3 class="bold-blue">Results</h3>
 
-      		<p>The Results 1</p>
-			<a href="#" rel="results1" title="Results1"><img src="{{ url_for('static', filename='img/UBER-logo.png') }}" /></a>
+      		<p>The results of this simple model clearly follow the same diurnal and weekly patterns seen in the original data set.   Plenty of late Saturday nights rolling over to Sunday mornings, higher demand on weekends and little to no activity in the middle of the night. Keep in mind this data is in UTC so there is a little shift in the actual local time - those 6am UTC calls are actually more like 3am EDT.</p>
+			<a href="#" rel="results1" title="Results"><img src="{{ url_for('static', filename='img/plot_predictMay2012_black.png') }}" /></a>
+      	</div>
+      	<div class="col-md-10">
+      		<h3 class="bold-blue">Table of Predicted Demand for Washington DC from May 1 through May 15, 2012</h3>
+      		<div class="col-md-4 col-md-offset-1">
+      			{% include 'tablePredictionsHead.html' %}
+				{% include 'tablePredictions.html' %}
+      		</div>
+      		<div class="col-md-6 col-md-offset-1">
+      			<p>This table shows the data in the UTC time with a floating point value of predicted demand. This same data is available via the <a href="../static/data/DemandPredictionMay2012.csv"> DemandPredictionMay2012.csv</a> file included in the //static/data/ folder of this project.</p>
+      		</div>
+      	</div>
       	
+      	<div class="col-md-10 col-md-offset-1">
       		<br><br>
-      		<p>The Results 2</p>
-			<a href="#" rel="results2" title="Results2"><img src="{{ url_for('static', filename='img/UBER-logo.png') }}" /></a>
-      	
+      		<p>Further analysis and error estimation should performed to see how well the model has matched the actual demand.</p>
       	</div>
       </div>
-      
       <hr class="featurette-divider">
       <div class="row featurette">
         <div class="col-md-10 col-md-offset-1">

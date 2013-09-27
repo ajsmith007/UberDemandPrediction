@@ -25,9 +25,9 @@
         <div class="col-md-10 col-md-offset-1">
       		<h3 class="bold-blue">Methodology</h3>
       	
-      		<p>My approach to this task was to create a simple model of the number of times the <a href="https://play.google.com/store/apps/details?id=com.ubercab&hl=en">Uber Mobile App </a>was accessed (a proxy for the expected number of ride requests) in a given hour and predict the demand for May 1, 2012 through May 15th, 2012 and beyond. I started with some basic temporal analysis of the data.</p> 
+      		<p>My approach to this task was to create a simple model based on the number of times the <a href="https://play.google.com/store/apps/details?id=com.ubercab&hl=en">Uber Mobile App </a>was accessed in a given hour and predict the demand for the following two week period and beyond. I started with some basic temporal analysis of the data.</p> 
       		<p>The first step was to convert the UTC timestamps in the json file to the local Washington D.C. time in the Eastern Time Zone. People rarely have an alarm clock that displays time in UTC (especially in the US) and weekly/daily/hourly patterns should emerge from the local time corrected data (including the switch from EST to EDT).</p>
-      		<p>Given that the data set provided contained a small number of samples (60 days) over a short specific two months (March 2012 and April 2012), Long term trends would be hard to model accuratly. So I began to investigate the overall trends and peroidicity of the data.</p> 
+      		<p>Given that the data set provided contained a small number of samples (60 days) over a short specific two months (March 2012 and April 2012), Long term trends would be hard to model accurately. So I began to investigate the overall trends and peroidicity of the data on daily and hourly basis.</p> 
        </div>
      </div>
      <hr class="featurette-divider">
@@ -35,7 +35,7 @@
         <div class="col-md-12">
       		<p class="bold-blue">Chart 1: Number of App Opens (freq) per Day (MM-DD)</p>
 			<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/plot_day_mm-dd_black.png') }}" /></a>
-			<p>Give more detail...</p>
+			<p>Chart 1 shows the number of times the app was opened (a proxy for the expected number of ride requests) for Feb 29th though April 30th in local Washington DC time (and yes, 2012 was a leap year). The data clearly shows a weekly periodicity where weekends have heavy traffic and the middle of the week is light. Unusually light on Saturday April 7th [04-07], not so many people headed out or coming home late before Easter Sunday on 04-08!</p>
       		<br><br>
       		<p class="bold-blue">Chart 2: Number of App Opens (freq) per Hour (hr) Color Coded by Day of the Week (dow)</p>
       		<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/plot_hours_dow_n_black.png') }}" /></a>
@@ -43,7 +43,7 @@
       		<br><br>
       		<p class="bold-blue">Chart 3: Ordinary Least Squares (OLS) Linear Regression by Day of Epoch (since 1970-01-01T00:00:00) Color Coded by Day of the Week (dow)</p>
       		<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/regression_day_of_epoch_by_dow_black.png') }}" /></a>
-      		<p>Give more detail...</p>
+      		<p>This chart displays an hourly</p>
       		<br><br>
       		<p class="bold-blue">Animation: Number of App Opens by Day of the Week Animated by the Hour</p>
       		<video width="1280" height="720" controls loop>

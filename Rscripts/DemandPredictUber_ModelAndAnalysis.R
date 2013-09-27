@@ -258,7 +258,7 @@ startDate$utc = as.POSIXct(startDate$iso_utc, "%Y-%m-%dT%H:%M:%S", tz="UTC")
 #startDate$local = format(as.POSIXct(strptime(startDate$iso_utc, "%Y-%m-%dT%H:%M:%S%z", tz="UTC")), tz="America/New_York", usetz=TRUE)
 startDate$local = format(startDate$utc, tz="America/New_York", usetz=TRUE)
 
-# Cycle through evry hour for the first two weeks in May 2012
+# Cycle through every hour for the first two weeks in May 2012
 for (dd in seq(0,14,1)) {
 	for (hh in seq(0,23,1)){ 
 		# Add multiple of hours (3600sec) to  
@@ -282,17 +282,52 @@ for (dd in seq(0,14,1)) {
 		newDate$iso_utc =  format(as.POSIXct(newDate$utc), '%Y-%m-%dT%H:%M:%S')
 		
 		if (dd == 0 & hh == 0){
-			prediction <- data.frame(datetime_utc=toString(newDate$iso_utc), prediction=as.numeric(predict.it))		
+			prediction.may <- data.frame(datetime_utc=toString(newDate$iso_utc), prediction=as.numeric(predict.it))		
 		} else {
-			prediction <- rbind(prediction, data.frame(datetime_utc=toString(newDate$iso_utc), prediction=as.numeric(predict.it)))		
+			prediction.may <- rbind(prediction, data.frame(datetime_utc=toString(newDate$iso_utc), prediction=as.numeric(predict.it)))		
 		}
 	}
 }
 
 # Write answers for first two weeks May 2012 to CSV 
-write.table(prediction, file="../static/data/DemandPredictionMay2012.csv", sep = ", ", row.names=FALSE, col.names=TRUE)
+#write.table(prediction.may, file="../static/data/DemandPredictionMay2012.csv", sep = ", ", row.names=FALSE, col.names=TRUE)
 
-#,append=FALSE, 
+# Genrate data for a plot
+for (i in 1:length(prediction.may$prediction)){
+	prediction.may$dow[i] = weekdays(as.POSIXlt(prediction.may$datetime_utc[i])) 	# Day of Week (dow)
+}
+	## Add numeric to start of Day of Week for better display (n_dow = "n-dow") 
+	# [FIXME - compute in previous loop using wday() in local_functions.R]
+	cat("Adding numeric prefix to dow...\n")
+	tic()
+	for (d in 1:length(prediction.may$prediction)){
+		if(prediction.may$dow[d] == "Sunday"){ 
+			prediction.may$n_dow[d] = "0-Sunday" 
+		} else if(prediction.may$dow[d] == "Monday"){
+			prediction.may$n_dow[d] = "1-Monday" 
+		} else if(prediction.may$dow[d] == "Tuesday"){ 
+			prediction.may$n_dow[d] = "2-Tuesday" 
+		} else if(prediction.may$dow[d] == "Wednesday"){ 
+			prediction.may$n_dow[d] = "3-Wednesday" 
+		} else if(prediction.may$dow[d] == "Thursday"){ 
+			prediction.may$n_dow[d] = "4-Thursday" 
+		} else if(prediction.may$dow[d] == "Friday"){ 
+			prediction.may$n_dow[d] = "5-Friday" 
+		} else if (prediction.may$dow[d] == "Saturday"){ 
+			prediction.may$n_dow[d] = "6-Saturday" 
+		}
+	}
+	toc()
+
+
+ggplot.may2012 <- ggplot(prediction.may, aes(x = format(datetime_utc, tz="UTC", usetz=TRUE), y = prediction)) +
+	geom_point(aes(colour = n_dow)) +
+	xlab("Predicted Demand for May 1 through May 15 2012") + 
+	scale_x_discrete(labels = abbreviate)+
+	theme_black() +
+	theme(axis.text.x=element_text(size=0, angle=90)) +
+	scale_color_brewer(palette="Blues")
+ggplot.may2012
 
 ##########################################################################
 
