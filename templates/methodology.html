@@ -25,36 +25,37 @@
         <div class="col-md-10 col-md-offset-1">
       		<h3 class="bold-blue">Methodology</h3>
       	
-      		<p>My approach to this task was to create a simple model based on the number of times the <a href="https://play.google.com/store/apps/details?id=com.ubercab&hl=en">Uber Mobile App </a>was accessed in a given hour and predict the demand for the following two week period and beyond. I started with some basic temporal analysis of the data.</p> 
-      		<p>The first step was to convert the UTC timestamps in the json file to the local Washington D.C. time in the Eastern Time Zone. People rarely have an alarm clock that displays time in UTC (especially in the US) and weekly/daily/hourly patterns should emerge from the local time corrected data (including the switch from EST to EDT).</p>
-      		<p>Given that the data set provided contained a small number of samples (60 days) over a short specific two months (March 2012 and April 2012), Long term trends would be hard to model accurately. So I began to investigate the overall trends and peroidicity of the data on daily and hourly basis.</p> 
+      		<p>My approach to this task was to create a simple model based on the number of times the <a href="https://play.google.com/store/apps/details?id=com.ubercab&hl=en">Uber Mobile App</a> was accessed in a given hour and predict the demand for the following two week period and beyond. I started with some basic temporal analysis of the data.</p> 
+      		<p>The first step was to convert the UTC timestamps in the json file to the local Washington D.C. time in the Eastern Time Zone. People rarely have an alarm clock that displays time in UTC (especially in the US) and weekly/daily/hourly patterns should emerge from the local time corrected data. Note: the data set spanned the Daylight Savings switch over from EST to EDT Sunday March 11, 2012 at 2:00am local time.</p>
+      		<p>Given that the data set provided contained a small number of samples (60 days) over a short specific two months (March 2012 and April 2012), longterm trends like yeqarly cycles would be hard to model accurately, so I began to investigate the overall trends and peroidicity of the data on a daily and hourly basis.</p> 
        </div>
      </div>
      <hr class="featurette-divider">
      <div class="row featurette">
         <div class="col-md-12">
-      		<p class="bold-blue">Chart 1: Number of App Opens (freq) per Day (MM-DD)</p>
+      		<p class="bold-blue">Chart 1: Number of Mobile App Hits (freq) per Day</p>
 			<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/plot_day_mm-dd_black.png') }}" /></a>
-			<p>Chart 1 shows the number of times the app was opened (a proxy for the expected number of ride requests) for Feb 29th though April 30th in local Washington DC time (and yes, 2012 was a leap year). The data clearly shows a weekly periodicity where weekends have heavy traffic and the middle of the week is light. Unusually light on Saturday April 7th [04-07], not so many people headed out or coming home late before Easter Sunday on 04-08!</p>
+			<p>Chart 1 shows the number of times the app was opened by a client (a proxy for the expected number of ride requests) for Feb 29th though April 30th in local Washington DC time (and yes, 2012 was a leap year). The data clearly shows a weekly periodicity where weekends have heavy traffic and the middle of the week is light. Unusually light on Saturday April 7th [04-07], not so many people headed out or coming home late before Easter Sunday on 04-08!</p>
       		<br><br>
       		<p class="bold-blue">Chart 2: Number of App Opens (freq) per Hour (hr) Color Coded by Day of the Week (dow)</p>
       		<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/plot_hours_dow_n_black.png') }}" /></a>
-      		<p>Give more detail...</p>
+      		<p>Chart 2 breaks down the data into hourly segments and is color coded by the day of the week (dow). Now we're starting to see trends emerge in the weekends vs weekdays, people headed to work in the morning and some mid-day weekend traffic. The data after midnight on Saturday and Sunday mornings is definitely a lag of people headed home.</p>
       		<br><br>
       		<p class="bold-blue">Chart 3: Ordinary Least Squares (OLS) Linear Regression by Day of Epoch (since 1970-01-01T00:00:00) Color Coded by Day of the Week (dow)</p>
       		<a href="#" rel="methodology" title="Methodology"><img src="{{ url_for('static', filename='img/regression_day_of_epoch_by_dow_black.png') }}" /></a>
-      		<p>This chart displays an hourly</p>
+      		<p>Chart 3 plots the data for every hour across the sample timeperiod but seperates them out by day of the week. Definitely some outliers that could corrupt predictions in the long term. In order to extend the data set beyond the month and year I chose to utilize the number of days in the epoch starting on 1970-01-01 00:00:00 UTC. This allows me to plot a linear regression model to the data for each day of the week and predict future demand outside of the small window of sample data. All of the slopes of the linear models by day of the week are positive. Good News: Uber is growing in DC!</p>
       		<br><br>
       		<p class="bold-blue">Animation: Number of App Opens by Day of the Week Animated by the Hour</p>
       		<video width="1280" height="720" controls loop>
   				<source src="{{ url_for('static', filename='img/regression_animation.mp4') }}" type="video/mp4">
 			</video>
-      		<p>Give more detail...</p>
+      		<p>[Don't forget to hit Play!]</p>
+			<p>I broke the sample data set down further into hours of the day by day of the week. This animation cycles through each hour and plots the data by day of the week for that hour. I then fitted an Ordinary Least Squares (OLS) model to each hour of each day of the week. The patterns seen in the earlier charts are still retained but clearer to see visually and easier to model mathmatically in these three dimensions: Day of Epoch, Hour of Day and Day of the Week.</p>
       	</div>
       </div>
       <hr class="featurette-divider">
       <div class="col-md-10">
-      	<p>What do the <a href="results.html">results</a> tell us about these patterns?</h4>
+      	<p>Given that the data set is from a short time window in a specific time of year, let's see how well the <a href="results.html">results</a> tell us about these patterns in the future.</h4>
       </div>
       
       <div class="col-md-10 col-md-offset-1">
