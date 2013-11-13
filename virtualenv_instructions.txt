@@ -1,7 +1,8 @@
 # Clone this repo git clone 
 git clone https://github.com/ajsmith007/UberDemandPrediction
 
-# or reate a new PyDev project in Eclipse
+# Download the tarball
+# and create a new PyDev project in Eclipse
 # or mkdir for Flask project
 
 # cd into the project directory
