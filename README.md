@@ -1,12 +1,10 @@
 UberDemandPrediction
 ====================
 
-Uber Demand Prediction Challenge
+Regional Demand Prediction for Private Car Service estimated from Mobile App data. 
 
-I hope you have found this API useful and up to the standards Uber expects from a Rock Star Data Scientist.
+This project looks at the overall regional demand for private car services in the Washington DC metropolitain area as a function of time. Demand is estimated from mobile app data (specifically when a user opens the application) which is used as a proxy for near term driver demand. The data does not contain GPS positions.
 
-This has been a very interesting project. The data set seemed innocuous at first but once I dug in a little more and applied some basic analysis techniques several temporal patterns we're revealed. It became immediately apparent that there was more than meets the eye.
+Data processing, analysis and visualizations are included in a local webapp server (Flask) and the predictions are distributed in JSON via a RESTful API.
 
-I was surprised to see so many aspects of human society encapsulated in this rather concise data set. For example there is a clear pattern showing late night activity on Friday and Saturday nights, there are episodic events (i.e. Holidays, Day Light Savings) and then other components that are possibly Weather related. I'm now even more curious about what this type of data can reveal about human behavior and how we interact with time and place.
-
--Drew
+Instructions for running he server are included for both Linux and Windows in the virtualenv_instructions.txt
