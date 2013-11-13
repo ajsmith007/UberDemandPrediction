@@ -1,0 +1,1 @@
+gource -s 0.5 -b 000000 --highlight-all-users --background-image static/img/UBER-logo.png -title "UberDemandPredict by Drew Smith" --user-scale 1.0 --hide filenames --key -1280x720 -o - | ffmpeg -y -b 3000K -r 60 -f image2pipe -vcodec ppm -i - -vcodec libx264 -crf 28 -threads 0 UberDemandPredict.mp4

@@ -3,8 +3,8 @@
 ########################################################################################
 demandPredict.py
 
-Coding Challenge for Uber
-Demand Prediction: Washington D.C. 
+Demand Prediction for Private Car Service: 
+Market: Washington D.C. 
 
 __author__ = "Drew Smith" 
 __email__ = "ajsmith007@gmail.com"
@@ -12,7 +12,6 @@ __version__ = "1.0.0"
 __status__ = "Demonstration"
 __copyright__ = Copyright 2013, Drew Smith"
 
-Assigned on: Sept 18, 2013
 Created on: Sep 20, 2013
 Completed on: Sep 26, 2013
 
@@ -20,6 +19,7 @@ Completed on: Sep 26, 2013
 '''
 from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
 import os
+import sys
 import jinja2
 import datetime
 import json
@@ -203,4 +203,6 @@ def favicon():
 ########################################################################################
 # Main
 if __name__ == '__main__':
+    if len(sys.argv) != 1:
+        print "[*] Usage: python demandPredict.py"
     app.run(debug = True)

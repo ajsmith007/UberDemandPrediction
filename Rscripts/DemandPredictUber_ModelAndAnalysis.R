@@ -320,12 +320,14 @@ for (i in 1:length(prediction.may$prediction)){
 	toc()
 
 
-ggplot.may2012 <- ggplot(prediction.may, aes(x = format(datetime_utc, tz="UTC", usetz=TRUE), y = prediction)) +
+#ggplot.may2012 <- ggplot(prediction.may, aes(x = format(datetime_utc, tz="UTC", usetz=TRUE), y = prediction)) +
+ggplot.may2012 <- ggplot(prediction.may, aes(x = as.POSIXct(datetime_utc, format='%Y-%m-%dT%H:%M:%S'), y = prediction)) +
 	geom_point(aes(colour = n_dow)) +
-	xlab("Predicted Demand for May 1 through May 15 2012") + 
-	scale_x_discrete(labels = abbreviate)+
+	xlab("Hour of the Day") + 
+	#scale_x_discrete(labels = abbreviate)+
+	#scale_x_discrete(breaks = labels, labels = labels)+
 	theme_black() +
-	theme(axis.text.x=element_text(size=0, angle=90)) +
+	theme(axis.text.x=element_text(size=8, angle=90)) +
 	scale_color_brewer(palette="Blues")
 ggplot.may2012
 
